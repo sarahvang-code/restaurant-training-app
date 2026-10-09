@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Restaurant Training</title>
+    <style>
+        :root {
+            --brand-red: #cc0000;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header & Department Toggle */
+        .header {
+            text-align: left;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .dept-toggle {
+            display: flex;
+            background: #e9ecef;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .dept-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .dept-btn.active {
+            background: var(--brand-red);
+            color: white;
+            border-radius: 20px;
+        }
+
+        /* Buttons & Grids */
+        .btn {
+            display: block;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            box-sizing: border-box;
+            border: none;
+        }
+
+        .primary {
+            background-color: var(--brand-red);
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .full-width {
+            width: 100%;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .secondary {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            text-align: left;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        /* Views */
+        .department-view {
+            display: none;
+        }
+
+        .department-view.active {
+            display: block;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 20px 0; /* Extra padding for iOS home indicator */
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .nav-item.active {
+            color: var(--brand-red);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            background-color: currentColor;
+            mask-size: cover;
+            -webkit-mask-size: cover;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-titles">
+                <h1 id="main-title">BOH Training</h1>
+                <p class="subtitle">Training reference and shared progress tracker.</p>
+            </div>
+            
+            <!-- New Toggle for BOH/FOH -->
+            <div class="dept-toggle">
+                <button class="dept-btn active" onclick="toggleDepartment('BOH')">BOH</button>
+                <button class="dept-btn" onclick="toggleDepartment('FOH')">FOH</button>
+            </div>
+        </header>
+
+        <!-- BOH Content View -->
+        <div id="boh-view" class="department-view active">
+            <button class="btn primary full-width">Welcome & Restaurant Tour <span style="font-size: 20px;">›</span></button>
+            
+            <div class="button-grid">
+                <button class="btn secondary">BOH Food Safety</button>
+                <button class="btn secondary">Primary</button>
+                <button class="btn secondary">Secondary</button>
+                <button class="btn secondary">Machines</button>
+                <button class="btn secondary">Breading</button>
+                <button class="btn secondary">Fries</button>
+                <button class="btn secondary">RSA Assessment</button>
+                <button class="btn secondary">Closing</button>
+                <button class="btn secondary">My Progress</button>
+                <button class="btn secondary">Add Team Member</button>
+                <button class="btn secondary">All Progress</button>
+                <button class="btn secondary">Edit Training</button>
+            </div>
+        </div>
+
+        <!-- FOH Content View -->
+        <div id="foh-view" class="department-view">
+            <button class="btn primary full-width">Welcome & Restaurant Tour <span style="font-size: 20px;">›</span></button>
+            
+            <div class="button-grid">
+                <button class="btn secondary">FOH Food Safety</button>
+                <button class="btn secondary">Winning Hearts Everyday</button>
+                <button class="btn secondary">FOH Basic Training</button>
+                <button class="btn secondary">Bagger Training</button>
+                <button class="btn secondary">FOH Assessments</button>
+                <button class="btn secondary">RSA Assessments</button>
+                <button class="btn secondary">Closing</button>
+                <button class="btn secondary">My Progress</button>
+                <button class="btn secondary">Add Team Member</button>
+                <button class="btn secondary">All Progress</button>
+                <button class="btn secondary">Edit Training</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Persistent Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active">
+            <span style="font-size: 20px; margin-bottom: 4px;">📖</span>
+            Training
+        </button>
+        <button class="nav-item">
+            <span style="font-size: 20px; margin-bottom: 4px;">📊</span>
+            My Progress
+        </button>
+        <button class="nav-item">
+            <span style="font-size: 20px; margin-bottom: 4px;">👤</span>
+            Trainer View
+        </button>
+    </nav>
+
+    <script>
+        // Function to toggle between BOH and FOH views
+        function toggleDepartment(dept) {
+            // Update Title
+            document.getElementById('main-title').innerText = dept + ' Training';
+
+            // Reset Toggle Buttons
+            const btns = document.querySelectorAll('.dept-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+
+            // Reset Views
+            const views = document.querySelectorAll('.department-view');
+            views.forEach(view => view.classList.remove('active'));
+
+            // Activate Selected
+            if(dept === 'BOH') {
+                document.getElementById('boh-view').classList.add('active');
+                btns[0].classList.add('active');
+            } else {
+                document.getElementById('foh-view').classList.add('active');
+                btns[1].classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
