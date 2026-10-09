@@ -271,5 +271,12 @@
             }
         }
     </script>
-</body>
+<!-- Load Supabase from a CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const supabaseUrl = 'https://dpyqsvqorfmuiztvixap.supabase.co'
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweXFzdnFvcmZtdWl6dHZpeGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1Njk2NzUsImV4cCI6MjEwNzE0NTY3NX0.WZV1Z-BxLZlxmUCNXFZJmcUNgTtKrsvGjf2YMYx5Hmw'
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+</script>/body>
 </html>
