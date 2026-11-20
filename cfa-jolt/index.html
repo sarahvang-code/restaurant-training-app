@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CFA Spark · Restaurant Operations</title>
 <meta name="theme-color" content="#9e0a23">
+<script>
+(function(){
+  try{
+    if(location.hostname==="cfa-jolt-operations.onrender.com" &&
+      !window.matchMedia("(display-mode: standalone)").matches &&
+      window.navigator.standalone!==true){
+      location.replace("https://cfa-spark.onrender.com"+location.pathname+location.search+location.hash);
+    }
+  }catch(e){console.warn("Could not follow the new CFA Spark website link",e);}
+})();
+</script>
 <meta name="application-name" content="CFA Spark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="CFA Spark">
@@ -129,7 +140,7 @@ function showInstallGuide(){
  overlay.innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-labelledby="spark-install-title">'+
  '<div class="row between"><div class="row"><span class="install-title-icon">✓</span><h2 id="spark-install-title" style="margin:0">Add CFA Spark to your iPad</h2></div><button type="button" class="btn secondary sm" data-install-dismiss aria-label="Close">✕</button></div>'+
  '<p class="muted" style="margin-top:16px">Give the team a home-screen icon that opens CFA Spark like an app, without the browser address bar.</p>'+
- '<ol class="install-steps"><li>Open <strong>cfa-jolt-operations.onrender.com</strong> in <strong>Safari</strong> on the iPad.</li>'+
+ '<ol class="install-steps"><li>Open <strong>cfa-spark.onrender.com</strong> in <strong>Safari</strong> on the iPad.</li>'+
  '<li>Tap the <strong>Share</strong> icon (square with an upward arrow).</li>'+
  '<li>Choose <strong>Add to Home Screen</strong> (under View More if needed).</li>'+
  '<li>Turn on <strong>Open as Web App</strong> if offered, then tap <strong>Add</strong>.</li></ol>'+
