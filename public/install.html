@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#9e0a23">
+<meta name="description" content="Get CFA Spark on your iPad or phone for free. Scan the QR code to install the restaurant operations app.">
+<link rel="icon" type="image/png" href="/spark-cfa-favicon-64-v2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/spark-cfa-apple-touch-180-v2.png">
+<title>Install CFA Spark · Free iPad Home Screen App</title>
+<style>
+:root{--red:#9e0a23;--navy:#4c5965;--sky:#c4d6e1;--ink:#2d262b;--muted:#6e626c;--line:#e8dde1;--bg:#fbf9fa}
+*{box-sizing:border-box}
+html{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink)}
+a{color:inherit}
+button,a{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid #d97e91;outline-offset:2px}
+.header{background:var(--red);color:#fff;position:relative;overflow:hidden}
+.header:after{content:"";position:absolute;right:-18px;top:-42px;width:210px;height:145px;opacity:.25;background:repeating-linear-gradient(135deg,transparent 0 13px,#c4d6e1 13px 15px,transparent 15px 29px);pointer-events:none}
+.header-inner{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:15px 26px;position:relative;z-index:1}
+.brand{display:flex;gap:12px;align-items:center;text-decoration:none;font-size:20px;font-weight:850}
+.brand img{border-radius:12px;width:43px;height:43px;object-fit:cover;background:#fff}
+.head-link{font-size:13px;font-weight:700;color:#fff;text-decoration:none;border:1px solid #ffffff65;padding:10px 14px;border-radius:10px}
+.head-link:hover{background:#ffffff20}
+.page{max-width:1050px;margin:0 auto;padding:46px 26px 20px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:32px}
+.kicker{font-size:11px;font-weight:850;color:var(--red);letter-spacing:1.7px;text-transform:uppercase}
+h1{font-size:clamp(34px,4.8vw,56px);letter-spacing:-1.6px;line-height:1.09;margin:13px 0 18px}
+.intro{font-size:17px;color:var(--muted);line-height:1.65;max-width:500px;margin:0 0 24px}
+.buttons{display:flex;gap:10px;flex-wrap:wrap}
+.btn{min-height:48px;border-radius:11px;display:inline-flex;justify-content:center;align-items:center;text-align:center;font-size:14px;font-weight:750;padding:11px 16px;text-decoration:none;border:1px solid var(--red)}
+.primary{background:var(--red);color:#fff}
+.primary:hover{background:#81091d}
+.secondary{background:#fff;color:var(--red)}
+.navy{background:var(--navy);border-color:var(--navy);color:#fff}
+.benefit{font-size:13px;color:var(--navy);font-weight:700;margin-top:22px;display:flex;align-items:center;gap:9px}
+.dot{width:10px;height:10px;background:#277650;border-radius:50%;flex:none}
+.qr-card{background:#fff;border:1px solid var(--line);border-radius:23px;padding:25px;text-align:center;box-shadow:0 17px 52px #370a1912;position:relative;overflow:hidden}
+.qr-card:after{content:"";position:absolute;right:0;top:0;width:105px;height:62px;background-image:radial-gradient(circle,#9e0a2325 1px,transparent 1.5px);background-size:11px 11px;pointer-events:none}
+.qr-card h2{margin:0;font-size:22px;letter-spacing:-.4px}
+.qr-card p{font-size:13px;line-height:1.6;color:var(--muted);margin:6px 0 20px}
+.qr{width:min(285px,100%);aspect-ratio:1;background:#fff;margin:auto;display:grid;place-items:center;border:8px solid #fff;box-shadow:0 0 0 1px #eadfe2;border-radius:9px}
+.qr svg{width:100%;height:100%;display:block;image-rendering:pixelated}
+.url{font-size:13px;font-weight:800;color:var(--navy);margin:17px 0 13px;overflow-wrap:anywhere}
+.copy{border:1px solid var(--sky);background:#eef5f8;color:var(--navy);border-radius:10px;padding:12px 16px;font-weight:750;min-height:44px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;margin-top:32px}
+.step{padding:24px;background:#fff;border:1px solid var(--line);border-radius:17px}
+.step-head{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+.num{width:36px;height:36px;border-radius:10px;background:#e6f0f6;color:var(--navy);display:grid;place-items:center;font-weight:850;flex:none}
+.step h3{margin:0;font-size:18px}
+.step ol{margin:0;padding-left:24px;line-height:1.85;color:#494149;font-size:14px}
+.tip{background:#f0f5f8;border:1px solid #d8e3ec;border-radius:12px;padding:17px 20px;color:#54606b;font-size:13px;line-height:1.6;margin-top:19px}
+.footer{text-align:center;color:#877780;font-size:12px;padding:22px}
+@media(max-width:790px){.hero{grid-template-columns:1fr}.page{padding-top:31px}.qr-card{max-width:500px;width:100%;margin:auto}}
+@media(max-width:550px){.header-inner{padding:14px 16px}.brand{font-size:17px}.head-link{font-size:12px;padding:9px 10px}.page{padding:28px 16px 10px}.buttons{flex-direction:column}.buttons>.btn{width:100%}.grid{grid-template-columns:1fr;gap:12px}.step{padding:19px}.intro{font-size:16px}}
+@media print{@page{size:letter;margin:.5in}.header{background:#fff!important;color:var(--red);border-bottom:2px solid var(--red)}.header:after,.head-link,.buttons,.copy,.footer{display:none!important}.header-inner{padding:10px 0}.page{padding:10px 0}.hero{display:block}.hero>section{text-align:center}.hero h1{font-size:34px;margin:8px 0}.intro{margin:0 auto 9px;font-size:13px}.benefit{justify-content:center;margin:8px}.qr-card{border:0;box-shadow:none;padding:8px}.qr-card h2{font-size:18px}.qr-card p{margin:3px 0 8px}.qr{width:230px}.url{margin:9px}.grid{margin-top:10px;gap:10px}.step{padding:12px}.step h3{font-size:14px}.step ol{font-size:11px}.tip{font-size:11px;margin-top:10px}}
+</style>
+</head>
+<body>
+<header class="header"><div class="header-inner">
+<a class="brand" href="/"><img src="/spark-cfa-apple-touch-180-v2.png" width="43" height="43" alt="">CFA Spark</a>
+<a class="head-link" href="/">Open App ↗</a>
+</div></header>
+<main class="page">
+<div class="hero">
+<section>
+<div class="kicker">For the CFA East Cartmill team</div>
+<h1>CFA Spark, one tap away.</h1>
+<p class="intro">Bring your checklists, cleaning schedules, and food safety logs straight to your store iPad or phone's Home Screen.</p>
+<div class="buttons">
+<a class="btn primary" href="/">↗ Open CFA Spark to install</a>
+<button type="button" class="btn secondary" id="share">Share installation page</button>
+<button type="button" class="btn navy" id="print">Print QR flyer</button>
+</div>
+<div class="benefit"><span class="dot"></span>Free Home Screen app · No App Store purchase</div>
+</section>
+<aside class="qr-card">
+<h2>Scan to get CFA Spark</h2>
+<p>Use an iPad or phone camera to open the installation instructions.</p>
+<div class="qr" id="qr" role="img" aria-label="Scannable QR code linking to CFA Spark installation instructions"></div>
+<div class="url">cfa-spark.onrender.com/install.html</div>
+<button type="button" class="copy" id="copy">Copy installation link</button>
+</aside>
+</div>
+<div class="grid">
+<section class="step"><div class="step-head"><span class="num">1</span><h3>iPad and iPhone · Safari</h3></div>
+<ol>
+<li>Scan the QR code or open this page in <strong>Safari</strong>.</li>
+<li>Tap <strong>Open CFA Spark to install</strong> above.</li>
+<li>In Safari, tap <strong>Share</strong> (square with the upward arrow).</li>
+<li>Tap <strong>Add to Home Screen</strong>. Enable <strong>Open as Web App</strong> if offered, then tap <strong>Add</strong>.</li>
+</ol>
+</section>
+<section class="step"><div class="step-head"><span class="num">2</span><h3>Android · Chrome</h3></div>
+<ol>
+<li>Open this page in <strong>Chrome</strong>.</li>
+<li>Tap <strong>Open CFA Spark to install</strong>.</li>
+<li>Open Chrome's menu (⋮), then select <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>
+<li>Confirm the installation to add CFA Spark to the device.</li>
+</ol>
+</section>
+</div>
+<div class="tip"><strong>Private restaurant workspace:</strong> The Home Screen installation is free, but using CFA Spark requires an approved team account. An internet connection is needed to save checklists and temperature readings.</div>
+<footer class="footer">CFA Spark · Restaurant Operations · Home Screen web app (not an App Store listing)</footer>
+</main>
+<script>
+(()=>{
+"use strict";
+const URL_TO_SHARE="https://cfa-spark.onrender.com/install.html";
+const HEX="00000000000000000000000000000000000000000000001fd6d15e7f0082c68d7a0805d169a997402eae6e68ba0175cd93e5d00829d355a0807f555555fc000146200000024a2a7e3b001128b10e58001be6181fc03e65fbb4040057c905beb00648a924358025d69bf39c034193d980001a431d20ed0088000426a801fc59b817c0107f93eb8a0107211abfa0079cdb406280619b2622dc03e041c7022017cb321b42004d7ee5873804bc62a679401f13b9bac601a4c39b3f50000e755b88807f06882d5c0209d6a422e0174cb81df900bab0a53dd805d23964e7402098f8366001fc3b53b3b0000000000000000000000000000000000000000000000";
+const n=45;
+const bits=[...HEX].map(ch=>parseInt(ch,16).toString(2).padStart(4,"0")).join("").slice(-n*n);
+if(bits.length===n*n){
+ const ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");
+ svg.setAttribute("viewBox","0 0 45 45");
+ svg.setAttribute("shape-rendering","crispEdges");svg.setAttribute("aria-hidden","true");
+ const bg=document.createElementNS(ns,"rect");
+ bg.setAttribute("width","45");bg.setAttribute("height","45");bg.setAttribute("fill","white");
+ svg.appendChild(bg);
+ for(let y=0;y<n;y++)for(let x=0;x<n;){
+   if(bits[y*n+x]!=="1"){x++;continue}
+   let run=1;while(x+run<n&&bits[y*n+x+run]==="1")run++;
+   const rect=document.createElementNS(ns,"rect");
+   rect.setAttribute("x",x);rect.setAttribute("y",y);rect.setAttribute("width",run);rect.setAttribute("height",1);rect.setAttribute("fill","#9e0a23");
+   svg.appendChild(rect);x+=run;
+ }
+ document.getElementById("qr").appendChild(svg);
+}
+async function copyLink(){
+ const b=document.getElementById("copy");
+ try{await navigator.clipboard.writeText(URL_TO_SHARE);b.textContent="✓ Link copied!";}
+ catch(e){const a=document.createElement("textarea");a.value=URL_TO_SHARE;document.body.appendChild(a);a.select();const ok=document.execCommand("copy");a.remove();b.textContent=ok?"✓ Link copied!":"Copy the URL above";}
+ setTimeout(()=>{b.textContent="Copy installation link";},2300);
+}
+document.getElementById("copy").addEventListener("click",copyLink);
+document.getElementById("share").addEventListener("click",async()=>{
+ if(navigator.share){try{await navigator.share({title:"Install CFA Spark",text:"Install CFA Spark for your restaurant iPad or phone.",url:URL_TO_SHARE});}catch(e){if(e.name!=="AbortError")await copyLink();}}
+ else await copyLink();
+});
+document.getElementById("print").addEventListener("click",()=>window.print());
+})();
+</script>
+</body></html>
