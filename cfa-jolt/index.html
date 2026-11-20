@@ -10,7 +10,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0?bundle
 const SUPABASE_URL="https://bmkrfeasbwtezczbhqhi.supabase.co";
 const SUPABASE_KEY="sb_publishable_n9cFcgIDR9jn6vR84J5-ug_4fTQzPvD";
 const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
-const s={user:null,profile:null,checklists:[],items:[],completions:[],temps:[],people:[],screen:"dashboard",filter:"All",selected:null,editor:null,authMode:"login",tempModal:false,pinConfigured:false,busy:false};
+const s={user:null,profile:null,checklists:[],items:[],completions:[],temps:[],people:[],screen:"dashboard",filter:"All",scheduleView:"today",selected:null,editor:null,authMode:"login",tempModal:false,pinConfigured:false,busy:false};
 const app=document.getElementById("app");
 const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const roleLabel=r=>({"director":"Director","manager":"Manager","team_leader":"Team Leader","team_member":"Team Member","pending":"Pending Approval"}[r]||"Team Member");
@@ -20,6 +20,10 @@ const fmt=d=>new Date(d).toLocaleString("en-US",{timeZone:"America/Los_Angeles",
 function dateInLA(d){const p=new Intl.DateTimeFormat("en-US",{timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);let o={};p.forEach(x=>o[x.type]=x.value);return o.year+"-"+o.month+"-"+o.day;}
 function weekStart(date){const d=new Date(date+"T12:00:00Z");const day=d.getUTCDay();d.setUTCDate(d.getUTCDate()-((day+6)%7));return d.toISOString().slice(0,10);}
 const today=()=>dateInLA(new Date());
+const weekdayNames=["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const currentWeekday=()=>weekdayNames.indexOf(new Intl.DateTimeFormat("en-US",{timeZone:"America/Los_Angeles",weekday:"long"}).format(new Date()));
+const dueToday=c=>c.schedule_weekday==null||Number(c.schedule_weekday)===currentWeekday();
+const scheduleName=c=>c.schedule_weekday?weekdayNames[c.schedule_weekday]:(c.frequency==="weekly"?"Weekly · any day":"Daily");
 const dateKey=c=>c.frequency==="weekly"?weekStart(today()):today();
 const ct=c=>s.items.filter(i=>i.checklist_id===c.id);
 const completion=i=>{const c=s.checklists.find(x=>x.id===i.checklist_id);return c?s.completions.find(x=>x.item_id===i.id&&x.service_date===dateKey(c)):null;};
@@ -75,19 +79,19 @@ function screenHtml(){if(s.screen==="checklists")return checklistsHtml();if(s.sc
 function heading(title,sub,button){return '<div class="section-head"><div><div class="eyebrow">CFA Jolt · Operations</div><h1>'+title+'</h1><p class="muted">'+sub+'</p></div>'+(button||"")+'</div>';}
 function progressBar(p){return '<div class="progress-track"><div class="progress-fill" style="width:'+p+'%"></div></div>';}
 function empty(title,body,action){return '<div class="empty"><div class="empty-icon">☑</div><h2>'+title+'</h2><p class="muted">'+body+'</p>'+(action||'')+'</div>';}
-function cardHtml(c){const n=ct(c).length,done=completedCount(c),p=percentage(c);return '<div class="card check-card" data-action="detail" data-id="'+c.id+'"><div class="row between"><div class="check-meta"><span class="pill">'+esc(c.category)+'</span><span class="pill dim">'+esc(c.shift)+'</span></div>'+(p===100&&n?'<span class="pill success">✓ Done</span>':'<span class="pill gold">'+(c.frequency==="weekly"?"Weekly":"Daily")+'</span>')+'</div><h3 style="font-size:17px;margin:0">'+esc(c.title)+'</h3><p class="muted small" style="margin:0;min-height:35px">'+esc(c.description||"Operational checklist")+'</p><div class="progress-info"><strong>'+done+' of '+n+' completed</strong><strong>'+p+'%</strong></div>'+progressBar(p)+'</div>';}
+function cardHtml(c){const n=ct(c).length,done=completedCount(c),p=percentage(c);return '<div class="card check-card" data-action="detail" data-id="'+c.id+'"><div class="row between"><div class="check-meta"><span class="pill">'+esc(c.category)+'</span><span class="pill dim">'+esc(c.shift)+'</span></div>'+(p===100&&n?'<span class="pill success">✓ Done</span>':'<span class="pill gold">'+(scheduleName(c))+'</span>')+'</div><h3 style="font-size:17px;margin:0">'+esc(c.title)+'</h3><p class="muted small" style="margin:0;min-height:35px">'+esc(c.description||"Operational checklist")+'</p><div class="progress-info"><strong>'+done+' of '+n+' completed</strong><strong>'+p+'%</strong></div>'+progressBar(p)+'</div>';}
 function dashboardHtml(){
- const active=s.checklists.filter(x=>x.active),allItems=active.flatMap(ct),done=allItems.filter(i=>completion(i)).length,rate=allItems.length?Math.round(done/allItems.length*100):0;
+ const active=s.checklists.filter(x=>x.active&&dueToday(x)),allItems=active.flatMap(ct),done=allItems.filter(i=>completion(i)).length,rate=allItems.length?Math.round(done/allItems.length*100):0;
  const outstanding=allItems.length-done;
- const stats=[["Task completion",rate+"%","◉","Across active checklists"],["Tasks completed",String(done),"✓","This reporting period"],["Open tasks",String(outstanding),"☷","Remaining checklist items"],["Temperature entries",String(s.temps.filter(t=>dateInLA(new Date(t.recorded_at))===today()).length),"♨","Recorded today"]];
+ const stats=[["Task completion",rate+"%","◉","Scheduled for today"],["Tasks completed",String(done),"✓","This reporting period"],["Open tasks",String(outstanding),"☷","Remaining checklist items"],["Temperature entries",String(s.temps.filter(t=>dateInLA(new Date(t.recorded_at))===today()).length),"♨","Recorded today"]];
  const recent=s.temps.slice(0,5).map(t=>'<div class="list-row"><div class="row between"><div><strong>'+esc(t.item_name)+'</strong><div class="muted small">'+esc(t.area)+' · '+fmt(t.recorded_at)+'</div></div><span class="pill dim">'+esc(t.temperature_f)+'°F</span></div></div>').join("");
  return heading("Good "+(new Date().getHours()<12?"morning":new Date().getHours()<17?"afternoon":"evening")+".","Here is your restaurant operations overview for "+new Date().toLocaleDateString("en-US",{timeZone:"America/Los_Angeles",weekday:"long",month:"long",day:"numeric"})+".",manage()?'<button class="btn" data-action="edit" data-id="new">+ New checklist</button>':'')+
  '<div class="stat-grid">'+stats.map(a=>'<div class="card"><div class="row between"><span class="stat-label">'+a[0]+'</span><div class="stat-icon">'+a[2]+'</div></div><div class="stat-num">'+a[1]+'</div><span class="muted small">'+a[3]+'</span></div>').join("")+'</div>'+
- '<div class="two-cols"><section class="card"><div class="card-title"><h2 style="margin:0">Checklist progress</h2><button class="btn linklike sm" data-action="nav" data-id="checklists">View all →</button></div>'+(active.length?active.slice(0,8).map(c=>'<div class="chart-line"><div class="progress-info"><strong>'+esc(c.title)+'</strong><span class="muted">'+completedCount(c)+' / '+ct(c).length+'</span></div>'+progressBar(percentage(c))+'</div>').join(""):empty("No checklists yet","Create your first opening, closing, or daily checklist.",manage()?'<button class="btn" data-action="edit" data-id="new">Create a checklist</button>':''))+'</section><section class="card"><div class="card-title"><h2 style="margin:0">Latest food safety logs</h2><button class="btn linklike sm" data-action="nav" data-id="temperatures">View all →</button></div>'+(recent||'<p class="muted">No temperature readings recorded yet.</p>')+'<div class="box-note" style="margin-top:20px">Temperature target limits should always follow your restaurant\'s approved food safety procedures.</div></section></div>';
+ '<div class="two-cols"><section class="card"><div class="card-title"><h2 style="margin:0">Today’s checklist progress</h2><button class="btn linklike sm" data-action="nav" data-id="checklists">View all →</button></div>'+(active.length?active.slice(0,8).map(c=>'<div class="chart-line"><div class="progress-info"><strong>'+esc(c.title)+'</strong><span class="muted">'+completedCount(c)+' / '+ct(c).length+'</span></div>'+progressBar(percentage(c))+'</div>').join(""):empty("No checklists yet","Create your first opening, closing, or daily checklist.",manage()?'<button class="btn" data-action="edit" data-id="new">Create a checklist</button>':''))+'</section><section class="card"><div class="card-title"><h2 style="margin:0">Latest food safety logs</h2><button class="btn linklike sm" data-action="nav" data-id="temperatures">View all →</button></div>'+(recent||'<p class="muted">No temperature readings recorded yet.</p>')+'<div class="box-note" style="margin-top:20px">Temperature target limits should always follow your restaurant\'s approved food safety procedures.</div></section></div>';
 }
 function checklistsHtml(){
- const visible=s.checklists.filter(c=>(c.active||manage())&&(s.filter==="All"||c.category===s.filter));
- return heading("Digital checklists","Opening, midday, closing and recurring operational procedures.",manage()?'<button class="btn" data-action="edit" data-id="new">+ Create checklist</button>':'')+
+ const visible=s.checklists.filter(c=>(c.active||manage())&&(s.filter==="All"||c.category===s.filter)&&((manage()&&s.scheduleView==="all")||dueToday(c)));
+ return heading("Digital checklists","Daily tasks and the "+weekdayNames[currentWeekday()]+" AM/PM cleaning checklists.",manage()?'<button class="btn" data-action="edit" data-id="new">+ Create checklist</button>':'')+
  '<div class="filter">'+["All","FOH","BOH","Leadership"].map(f=>'<button class="'+(s.filter===f?"active":"")+'" data-action="filter" data-id="'+f+'">'+f+'</button>').join("")+'</div>'+
  (visible.length?'<div class="check-grid">'+visible.map(cardHtml).join("")+'</div>':empty("No checklists found","Switch filters or create your first checklist.",manage()?'<button class="btn" data-action="edit" data-id="new">Create checklist</button>':''));
 }
@@ -152,6 +156,7 @@ document.addEventListener("click",async ev=>{
  if(a==="signout"){const {error}=await sb.auth.signOut();if(error)err(error);else{s.user=null;s.profile=null;render();}}
  if(a==="refresh"){await sync();}
  if(a==="filter"){s.filter=id;render();}
+ if(a==="scheduleview"){s.scheduleView=id==="all"?"all":"today";render();}
  if(a==="detail"){s.screen="detail";s.selected=id;render();window.scrollTo(0,0);}
  if(a==="edit"){s.editor=id;render();}
  if(a==="tempnew"){s.tempModal=true;render();}
@@ -210,6 +215,7 @@ document.addEventListener("submit",async ev=>{
 async function initUser(){const {data,error}=await sb.auth.getUser();if(error&&error.message!=="Auth session missing!"){console.warn(error);}s.user=data?.user||null;await sync();}
 async function toggleTask(id){
  const item=s.items.find(x=>x.id===id);if(!item)return;const c=s.checklists.find(x=>x.id===item.checklist_id);if(!c||!c.active)return;
+ if(!dueToday(c)){toast("This checklist is due only on "+scheduleName(c)+".",true);return;}
  const done=completion(item);
  if(done){
   if(!manage()&&done.completed_by!==s.user.id){toast("Only the person who completed the task or a manager can undo it.",true);return;}
