@@ -10,11 +10,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0?bundle
 const SUPABASE_URL="https://bmkrfeasbwtezczbhqhi.supabase.co";
 const SUPABASE_KEY="sb_publishable_n9cFcgIDR9jn6vR84J5-ug_4fTQzPvD";
 const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
-const s={user:null,profile:null,checklists:[],items:[],completions:[],temps:[],people:[],screen:"dashboard",filter:"All",selected:null,editor:null,authMode:"login",tempModal:false,busy:false};
+const s={user:null,profile:null,checklists:[],items:[],completions:[],temps:[],people:[],screen:"dashboard",filter:"All",selected:null,editor:null,authMode:"login",tempModal:false,pinConfigured:false,busy:false};
 const app=document.getElementById("app");
 const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const roleLabel=r=>({"operator":"Operator","director":"Director","manager":"Manager","team_leader":"Team Leader","team_member":"Team Member","pending":"Pending Approval"}[r]||"Team Member");
-const manage=()=>["operator","director","manager"].includes(s.profile?.role);
+const roleLabel=r=>({"director":"Director","manager":"Manager","team_leader":"Team Leader","team_member":"Team Member","pending":"Pending Approval"}[r]||"Team Member");
+const manage=()=>["director","manager"].includes(s.profile?.role);
 const staff=()=>s.profile&&s.profile.role!=="pending";
 const fmt=d=>new Date(d).toLocaleString("en-US",{timeZone:"America/Los_Angeles",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
 function dateInLA(d){const p=new Intl.DateTimeFormat("en-US",{timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);let o={};p.forEach(x=>o[x.type]=x.value);return o.year+"-"+o.month+"-"+o.day;}
@@ -35,6 +35,12 @@ async function sync(){
   const p=await sb.from("profiles").select("*").eq("id",s.user.id).single();
   if(p.error)throw p.error;
   s.profile=p.data;
+  s.pinConfigured=false;
+  if(s.profile.role==="director"){
+   const ps=await sb.rpc("director_pin_status");
+   if(ps.error)throw ps.error;
+   s.pinConfigured=Boolean(ps.data);
+  }
   if(staff()){
    const res=await Promise.all([
     sb.from("checklists").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true}),
@@ -53,8 +59,8 @@ function render(){
  if(!s.user){renderAuth();return;}
  if(!s.profile){app.innerHTML='<div class="auth-right" style="height:100vh"><p class="muted">Setting up your profile...</p></div>';return;}
  if(!staff()){renderPending();return;}
- const navs=[["dashboard","◫","Dashboard"],["checklists","☑","Checklists"],["temperatures","♨","Temperature Logs"],["team","♙","Team Members"]];
- const menu=navs.filter(n=>n[0]!=="team"||manage()).map(n=>'<button class="nav '+(s.screen===n[0]?'active':'')+'" data-action="nav" data-id="'+n[0]+'"><span class="sym">'+n[1]+'</span><span class="nav-label">'+n[2]+'</span></button>').join("");
+ const navs=[["dashboard","◫","Dashboard"],["checklists","☑","Checklists"],["temperatures","♨","Temperature Logs"],["team","♙","Team Members"],["settings","⚙","Director Settings"]];
+ const menu=navs.filter(n=>(n[0]!=="team"||manage())&&(n[0]!=="settings"||s.profile.role==="director")).map(n=>'<button class="nav '+(s.screen===n[0]?'active':'')+'" data-action="nav" data-id="'+n[0]+'"><span class="sym">'+n[1]+'</span><span class="nav-label">'+n[2]+'</span></button>').join("");
  const name=s.profile.full_name||s.user.email.split("@")[0];
  app.innerHTML='<div class="app"><aside class="side"><div class="logo"><div class="logo-symbol">✓</div><span class="logo-label">CFA <span style="color:#ffda72">Jolt</span></span></div><div class="side-section">Workspace</div><nav>'+menu+'</nav><div class="side-bottom"><div style="font-weight:800">'+esc(name)+'</div><div style="color:#a0c2b4;font-size:12px">'+esc(roleLabel(s.profile.role))+'</div></div></aside><main class="main"><div class="top"><div><div style="font-weight:800;color:#173b2b">CFA East Cartmill</div><div class="muted small">Restaurant operations workspace</div></div><div class="row"><span class="pill dim">'+esc(roleLabel(s.profile.role))+'</span><button class="btn secondary sm" data-action="signout">Sign out</button></div></div><div class="content">'+screenHtml()+'</div></main></div>'+modalHtml();
 }
@@ -63,9 +69,9 @@ function renderAuth(){
  app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA <span style="color:#ffda72">Jolt</span></span></div><div><div class="eyebrow" style="color:#ffd777">A better way to run the day</div><h1>One team.<br>Every task.<br>Done right.</h1><p style="color:#b5d2c5;max-width:400px;font-size:16px">Checklists, food safety, and accountability — all together in your restaurant\'s own workspace.</p></div><div style="color:#9fbcac;font-size:12px">CFA East Cartmill · Independent operations system</div></section><section class="auth-right"><div class="auth-panel"><div class="mobile-only" style="margin-bottom:30px;font-size:22px;font-weight:800;color:#174b35">✓ CFA Jolt</div><div class="eyebrow">Restaurant operations</div><h2>'+(signup?'Create an account':'Welcome back')+'</h2><p class="muted">'+(signup?'Sign up to join your restaurant workspace. An administrator will approve staff access.':'Sign in to your CFA Jolt workspace.')+'</p><form data-form="auth">'+(signup?'<div class="field"><label>Full name</label><input name="name" required maxlength="120" placeholder="Your name"></div>':'')+'<div class="field"><label>Work email</label><input type="email" name="email" autocomplete="email" required placeholder="name@example.com"></div><div class="field"><label>Password</label><input type="password" name="password" autocomplete="'+(signup?'new-password':'current-password')+'" minlength="8" required placeholder="At least 8 characters"></div><button class="btn full" type="submit">'+(signup?'Create account':'Sign in')+'</button></form><div class="divider"></div><p class="muted" style="text-align:center">'+(signup?'Already registered?':'New team member?')+' <button class="btn linklike" data-action="authmode" data-id="'+(signup?'login':'signup')+'">'+(signup?'Sign in':'Create account')+'</button></p><div class="box-note">This is a private restaurant workspace. New accounts do not get access until approved.</div></div></section></div>';
 }
 function renderPending(){
- app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA Jolt</span></div><div><h1>Ready for the next shift.</h1><p style="color:#b5d2c5">Simple tools for a better restaurant day.</p></div><span>Secure staff access</span></section><section class="auth-right"><div class="auth-panel"><div class="eyebrow">Account created</div><h2>Welcome, '+esc(s.profile.full_name||"team member")+'</h2><p class="muted">Your account is waiting for approval from the Operator or a Director. If you are setting up CFA Jolt for the first time, use the one-time Operator setup code below.</p><form data-form="claim"><div class="field"><label>One-time Operator setup code</label><input name="code" autocomplete="off" placeholder="Enter setup code" required></div><button class="btn full" type="submit">Activate Operator account</button></form><div class="divider"></div><div class="row between"><button class="btn secondary" data-action="refresh">Check approval</button><button class="btn secondary" data-action="signout">Sign out</button></div><p class="muted small" style="margin-top:18px">Staff members can leave the setup code blank and wait for approval.</p></div></section></div>';
+ app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA Jolt</span></div><div><h1>Ready for the next shift.</h1><p style="color:#f0c9d2">Simple tools for a better restaurant day.</p></div><span>Secure staff access</span></section><section class="auth-right"><div class="auth-panel"><div class="eyebrow">Account created</div><h2>Welcome, '+esc(s.profile.full_name||"team member")+'</h2><p class="muted">Your account is waiting for approval from a Director. Please ask your restaurant Director to assign your access level.</p><div class="box-note">Director is the highest access level in CFA Jolt. New accounts remain restricted until approved.</div><div class="divider"></div><div class="row between"><button class="btn secondary" data-action="refresh">Check approval</button><button class="btn secondary" data-action="signout">Sign out</button></div></div></section></div>';
 }
-function screenHtml(){if(s.screen==="checklists")return checklistsHtml();if(s.screen==="temperatures")return temperaturesHtml();if(s.screen==="team")return teamHtml();if(s.screen==="detail")return detailHtml();return dashboardHtml();}
+function screenHtml(){if(s.screen==="checklists")return checklistsHtml();if(s.screen==="temperatures")return temperaturesHtml();if(s.screen==="team")return teamHtml();if(s.screen==="settings")return settingsHtml();if(s.screen==="detail")return detailHtml();return dashboardHtml();}
 function heading(title,sub,button){return '<div class="section-head"><div><div class="eyebrow">CFA Jolt · Operations</div><h1>'+title+'</h1><p class="muted">'+sub+'</p></div>'+(button||"")+'</div>';}
 function progressBar(p){return '<div class="progress-track"><div class="progress-fill" style="width:'+p+'%"></div></div>';}
 function empty(title,body,action){return '<div class="empty"><div class="empty-icon">☑</div><h2>'+title+'</h2><p class="muted">'+body+'</p>'+(action||'')+'</div>';}
@@ -102,15 +108,28 @@ function temperaturesHtml(){
 }
 function teamHtml(){
  if(!manage())return dashboardHtml();
- const roles=["pending","team_member","team_leader","manager","director","operator"];
+ const roles=["pending","team_member","team_leader","manager","director"];
  const rows=s.people.map(p=>{
- const allowed=s.profile.role==="operator"||(s.profile.role==="director"&&!["operator","director"].includes(p.role));
- let opt=roles.filter(r=>s.profile.role==="operator"||!["operator","director"].includes(r)).map(r=>'<option value="'+r+'" '+(p.role===r?'selected':'')+'>'+esc(roleLabel(r))+'</option>').join("");
- return '<tr><td><strong>'+esc(p.full_name||"Unnamed team member")+'</strong><div class="muted small">'+esc(p.id===s.user.id?"You":"Team account")+'</div></td><td><span class="pill '+(p.role==="pending"?"gold":"dim")+'">'+esc(roleLabel(p.role))+'</span></td><td class="muted">'+new Date(p.joined_at).toLocaleDateString()+'</td><td>'+(allowed&&["operator","director"].includes(s.profile.role)?'<select style="max-width:190px" data-change="role" data-id="'+p.id+'">'+opt+'</select>':'<span class="muted">View only</span>')+'</td></tr>';
+  const editable=s.profile.role==="director";
+  const opts=roles.map(r=>'<option value="'+r+'" '+(p.role===r?'selected':'')+'>'+esc(roleLabel(r))+'</option>').join("");
+  return '<tr><td><strong>'+esc(p.full_name||"Unnamed team member")+'</strong><div class="muted small">'+esc(p.id===s.user.id?"You":"Team account")+'</div></td><td><span class="pill '+(p.role==="pending"?"gold":"dim")+'">'+esc(roleLabel(p.role))+'</span></td><td class="muted">'+new Date(p.joined_at).toLocaleDateString()+'</td><td>'+(editable?'<select style="max-width:190px" data-change="role" data-id="'+p.id+'">'+opts+'</select>':'<span class="muted">View only</span>')+'</td></tr>';
  }).join("");
- return heading("Team members","Approve new accounts and control who can access the workspace.",'')+
- '<div class="box-note" style="margin-bottom:20px">Ask team members to select Create account on the login screen. New accounts begin with Pending Approval and cannot access restaurant records until you approve them.</div>'+
+ return heading("Team members","Approve new accounts and manage staff access.",s.profile.role==="director"?'<button class="btn secondary" data-action="nav" data-id="settings">⚙ Director Settings</button>':'')+
+ '<div class="box-note" style="margin-bottom:20px">New accounts begin with Pending Approval. Only Directors can change a team member’s role, and role changes require your 6-digit Director PIN. Set yours in Director Settings first.</div>'+
  '<div class="card table-wrap">'+(rows?'<table class="table"><thead><tr><th>Team member</th><th>Access</th><th>Joined</th><th>Change role</th></tr></thead><tbody>'+rows+'</tbody></table>':empty("No team accounts","Ask teammates to create accounts first."))+'</div>';
+}
+function settingsHtml(){
+ if(s.profile?.role!=="director")return dashboardHtml();
+ const hasPin=s.pinConfigured;
+ const pinInput=(name,label,auto)=>'<div class="field"><label>'+label+'</label><input type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="'+auto+'" name="'+name+'" required placeholder="Enter 6 digits"></div>';
+ return heading("Director Settings","Security and administrative access for the highest leadership level.","")+
+ '<div class="card" style="max-width:680px"><div class="row between wrap" style="margin-bottom:18px"><div><h2 style="margin:0">Director security PIN</h2><p class="muted small" style="margin:8px 0 0">A personal, customizable 6-digit code.</p></div><span class="pill '+(hasPin?'':'gold')+'">'+(hasPin?'✓ PIN configured':'Setup needed')+'</span></div>'+
+ '<div class="box-note" style="margin-bottom:20px">Your Director PIN is separate from your login password. It is required to approve team members or change their access. Keep it private.</div>'+
+ '<form data-form="director-pin">'+(hasPin?pinInput("current_pin","Current 6-digit PIN","current-password"):'')+
+ pinInput("new_pin","New 6-digit PIN","new-password")+pinInput("confirm_pin","Confirm new PIN","new-password")+
+ '<p class="muted small">Avoid easy-to-guess codes such as 123456 or repeated digits.</p>'+
+ '<div class="form-actions"><button class="btn" type="submit">'+(hasPin?'Change Director PIN':'Create Director PIN')+'</button></div></form></div>'+
+ '<div class="card" style="max-width:680px;margin-top:18px"><h3>Leadership permissions</h3><p class="muted">Director is the highest role. No Operator role or Operator activation code exists in this app. Only Directors can assign staff permissions.</p><button class="btn secondary" data-action="nav" data-id="team">Manage team members →</button></div>';
 }
 function modalHtml(){
  if(s.editor!==null){
@@ -142,10 +161,19 @@ document.addEventListener("click",async ev=>{
  if(a==="move"){await moveChecklist(id,b.dataset.dir);}
 });
 document.addEventListener("change",async ev=>{
- const t=ev.target;if(t.dataset.change!=="role")return;
+ const t=ev.target;
+ if(t.dataset.change!=="role")return;
+ if(s.profile?.role!=="director"){toast("Only Directors can assign roles.",true);render();return;}
+ if(!s.pinConfigured){toast("Create your 6-digit Director PIN in Director Settings first.",true);s.screen="settings";render();return;}
  if(!confirm("Set this team member to "+roleLabel(t.value)+"?")){render();return;}
- const {error}=await sb.rpc("set_team_member_role",{p_target:t.dataset.id,p_role:t.value});
- if(error)err(error);else{toast("Role updated.");await sync();}
+ const pin=window.prompt("Enter your 6-digit Director PIN to authorize the role change:");
+ if(pin===null){render();return;}
+ if(!/^[0-9]{6}$/.test(pin)){toast("Enter exactly 6 digits.",true);render();return;}
+ const {data,error}=await sb.rpc("set_team_member_role",{p_target:t.dataset.id,p_role:t.value,p_pin:pin});
+ if(error){err(error);render();return;}
+ const errors={unauthorized:"Only Directors can assign roles.",invalid_role:"Invalid role.",not_found:"Account not found.",last_director:"You cannot remove the last Director.",pin_not_set:"Set your Director PIN first.",incorrect_pin:"Incorrect Director PIN.",locked:"Too many incorrect PIN attempts. Try again in 15 minutes."};
+ if(data!=="updated"){toast(errors[data]||"Could not change role.",true);render();return;}
+ toast("Role updated.");await sync();
 });
 document.addEventListener("submit",async ev=>{
  const f=ev.target;if(!f.dataset.form)return;ev.preventDefault();
@@ -163,9 +191,17 @@ document.addEventListener("submit",async ev=>{
     if(error)throw error;await initUser();
    }
   }
-  if(kind==="claim"){
-   const {error}=await sb.rpc("claim_operator",{p_setup_code:x.code.trim()});
-   if(error)throw error;toast("Operator account activated!");s.screen="dashboard";await sync();
+  if(kind==="director-pin"){
+   if(s.profile?.role!=="director")throw new Error("Only Directors can set a PIN.");
+   if(!/^[0-9]{6}$/.test(x.new_pin))throw new Error("PIN must be exactly six digits.");
+   if(x.new_pin!==x.confirm_pin)throw new Error("New PINs do not match.");
+   if(s.pinConfigured&&!/^[0-9]{6}$/.test(x.current_pin||""))throw new Error("Enter your current six-digit PIN.");
+   const {data,error}=await sb.rpc("change_director_pin",{p_new_pin:x.new_pin,p_current_pin:s.pinConfigured?x.current_pin:null});
+   if(error)throw error;
+   const messages={unauthorized:"Only Directors can set a PIN.",invalid_pin_format:"PIN must be exactly six digits.",weak_pin:"Choose a less predictable six-digit PIN.",locked:"Too many incorrect attempts. Try again in 15 minutes.",incorrect_current_pin:"The current PIN is incorrect.",same_pin:"Choose a new PIN different from your existing PIN."};
+   if(data!=="created"&&data!=="changed")throw new Error(messages[data]||"Unable to save PIN.");
+   toast(data==="created"?"Director PIN created.":"Director PIN changed.");
+   await sync();
   }
   if(kind==="checklist"){await saveChecklist(x);}
   if(kind==="temperature"){await saveTemperature(x);}
