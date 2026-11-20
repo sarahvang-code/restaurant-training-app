@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CFA Jolt · Restaurant Operations</title>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CFA Spark · Restaurant Operations</title>
 <meta name="theme-color" content="#9e0a23">
-<meta name="application-name" content="CFA Jolt">
+<meta name="application-name" content="CFA Spark">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="CFA Jolt">
+<meta name="apple-mobile-web-app-title" content="CFA Spark">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
@@ -119,27 +119,27 @@ const app=document.getElementById("app");
 const isStandalone=()=>window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone===true;
 let deferredInstallPrompt=null;
 window.addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();deferredInstallPrompt=ev;});
-window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;toast("CFA Jolt was added to your device.");});
+window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;toast("CFA Spark was added to your device.");});
 function showInstallGuide(){
- const existing=document.getElementById("jolt-install-guide");
+ const existing=document.getElementById("spark-install-guide");
  if(existing)return;
  const overlay=document.createElement("div");
  overlay.className="modal-back";
- overlay.id="jolt-install-guide";
- overlay.innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-labelledby="jolt-install-title">'+
- '<div class="row between"><div class="row"><span class="install-title-icon">✓</span><h2 id="jolt-install-title" style="margin:0">Add CFA Jolt to your iPad</h2></div><button type="button" class="btn secondary sm" data-install-dismiss aria-label="Close">✕</button></div>'+
- '<p class="muted" style="margin-top:16px">Give the team a home-screen icon that opens CFA Jolt like an app, without the browser address bar.</p>'+
+ overlay.id="spark-install-guide";
+ overlay.innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-labelledby="spark-install-title">'+
+ '<div class="row between"><div class="row"><span class="install-title-icon">✓</span><h2 id="spark-install-title" style="margin:0">Add CFA Spark to your iPad</h2></div><button type="button" class="btn secondary sm" data-install-dismiss aria-label="Close">✕</button></div>'+
+ '<p class="muted" style="margin-top:16px">Give the team a home-screen icon that opens CFA Spark like an app, without the browser address bar.</p>'+
  '<ol class="install-steps"><li>Open <strong>cfa-jolt-operations.onrender.com</strong> in <strong>Safari</strong> on the iPad.</li>'+
  '<li>Tap the <strong>Share</strong> icon (square with an upward arrow).</li>'+
  '<li>Choose <strong>Add to Home Screen</strong> (under View More if needed).</li>'+
  '<li>Turn on <strong>Open as Web App</strong> if offered, then tap <strong>Add</strong>.</li></ol>'+
- '<div class="box-note">CFA Jolt uses live restaurant records. Keep the iPad connected to Wi-Fi or cellular data to complete checklists and temperature logs.</div>'+
+ '<div class="box-note">CFA Spark uses live restaurant records. Keep the iPad connected to Wi-Fi or cellular data to complete checklists and temperature logs.</div>'+
  '<div class="form-actions"><button type="button" class="btn" data-install-dismiss>Got it</button></div></div>';
  document.body.appendChild(overlay);
  overlay.addEventListener("click",ev=>{if(ev.target===overlay||ev.target.closest("[data-install-dismiss]"))overlay.remove();});
 }
 async function promptInstall(){
- if(isStandalone()){toast("CFA Jolt is already running as an app.");return;}
+ if(isStandalone()){toast("CFA Spark is already running as an app.");return;}
  if(deferredInstallPrompt){
    const prompt=deferredInstallPrompt;deferredInstallPrompt=null;
    try{await prompt.prompt();}catch(e){console.warn("Install prompt unavailable",e);showInstallGuide();}
@@ -166,7 +166,7 @@ const percentage=c=>ct(c).length?Math.round(completedCount(c)/ct(c).length*100):
 function toast(message,bad=false){const el=document.getElementById("toast-root");el.innerHTML='<div class="toast" style="'+(bad?'background:#a93e36':'')+'">'+esc(message)+'</div>';setTimeout(()=>el.innerHTML="",4200);}
 function errorMessage(e){return e&&e.message?e.message:String(e||"Something went wrong");}
 function err(e){console.error(e);toast(errorMessage(e),true);}
-function loadingScreen(){app.innerHTML='<div class="auth-right" style="height:100vh"><div><div class="logo-symbol" style="margin:auto">✓</div><p class="muted">Loading CFA Jolt...</p></div></div>';}
+function loadingScreen(){app.innerHTML='<div class="auth-right" style="height:100vh"><div><div class="logo-symbol" style="margin:auto">✓</div><p class="muted">Loading CFA Spark...</p></div></div>';}
 async function sync(){
  if(!s.user){s.profile=null;render();return;}
  try{
@@ -200,17 +200,17 @@ function render(){
  const navs=[["dashboard","◫","Dashboard","Home"],["checklists","☑","Checklists","Tasks"],["temperatures","♨","Temperature Logs","Temps"],["team","♙","Team Members","Team"],["settings","⚙","Director Settings","Settings"]];
  const menu=navs.filter(n=>(n[0]!=="team"||manage())&&(n[0]!=="settings"||s.profile.role==="director")).map(n=>'<button class="nav '+(s.screen===n[0]?'active':'')+'" data-action="nav" data-id="'+n[0]+'" title="'+esc(n[2])+'" aria-label="'+esc(n[2])+'"><span class="sym" aria-hidden="true">'+n[1]+'</span><span class="nav-label">'+n[2]+'</span><span class="nav-short">'+n[3]+'</span></button>').join("");
  const name=s.profile.full_name||s.user.email.split("@")[0];
- app.innerHTML='<div class="app"><aside class="side"><div class="logo"><div class="logo-symbol">✓</div><span class="logo-label">CFA <span style="color:#ffda72">Jolt</span></span></div><div class="side-section">Workspace</div><nav>'+menu+'</nav><div class="side-bottom"><div style="font-weight:800">'+esc(name)+'</div><div style="color:#facbd5;font-size:12px">'+esc(roleLabel(s.profile.role))+'</div></div></aside><main class="main"><div class="top"><div><div style="font-weight:800;color:#9e0a23">CFA East Cartmill</div><div class="muted small">Restaurant operations workspace</div></div><div class="row"><span class="pill dim">'+esc(roleLabel(s.profile.role))+'</span>'+(!isStandalone()?'<button class="btn secondary sm" data-action="install">⇩ Install app</button>':'')+'<button class="btn secondary sm" data-action="signout">Sign out</button></div></div><div class="content">'+screenHtml()+'</div></main></div>'+modalHtml();
+ app.innerHTML='<div class="app"><aside class="side"><div class="logo"><div class="logo-symbol">✓</div><span class="logo-label">CFA <span style="color:#ffda72">Spark</span></span></div><div class="side-section">Workspace</div><nav>'+menu+'</nav><div class="side-bottom"><div style="font-weight:800">'+esc(name)+'</div><div style="color:#facbd5;font-size:12px">'+esc(roleLabel(s.profile.role))+'</div></div></aside><main class="main"><div class="top"><div><div style="font-weight:800;color:#9e0a23">CFA East Cartmill</div><div class="muted small">Restaurant operations workspace</div></div><div class="row"><span class="pill dim">'+esc(roleLabel(s.profile.role))+'</span>'+(!isStandalone()?'<button class="btn secondary sm" data-action="install">⇩ Install app</button>':'')+'<button class="btn secondary sm" data-action="signout">Sign out</button></div></div><div class="content">'+screenHtml()+'</div></main></div>'+modalHtml();
 }
 function renderAuth(){
  const signup=s.authMode==="signup";
- app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA <span style="color:#ffda72">Jolt</span></span></div><div><div class="eyebrow" style="color:#ffd777">A better way to run the day</div><h1>One team.<br>Every task.<br>Done right.</h1><p style="color:#ffe3eb;max-width:400px;font-size:16px">Checklists, food safety, and accountability — all together in your restaurant\'s own workspace.</p></div><div style="color:#f4cad4;font-size:12px">CFA East Cartmill · Independent operations system</div></section><section class="auth-right"><div class="auth-panel"><div class="mobile-only" style="margin-bottom:30px;font-size:22px;font-weight:800;color:#9e0a23">✓ CFA Jolt</div><div class="eyebrow">Restaurant operations</div><h2>'+(signup?'Create an account':'Welcome back')+'</h2><p class="muted">'+(signup?'Sign up to join your restaurant workspace. An administrator will approve staff access.':'Sign in to your CFA Jolt workspace.')+'</p><form data-form="auth">'+(signup?'<div class="field"><label>Full name</label><input name="name" required maxlength="120" placeholder="Your name"></div>':'')+'<div class="field"><label>Work email</label><input type="email" name="email" autocomplete="email" required placeholder="name@example.com"></div><div class="field"><label>Password</label><input type="password" name="password" autocomplete="'+(signup?'new-password':'current-password')+'" minlength="8" required placeholder="At least 8 characters"></div><button class="btn full" type="submit">'+(signup?'Create account':'Sign in')+'</button></form><div class="divider"></div><p class="muted" style="text-align:center">'+(signup?'Already registered?':'New team member?')+' <button class="btn linklike" data-action="authmode" data-id="'+(signup?'login':'signup')+'">'+(signup?'Sign in':'Create account')+'</button></p><div class="box-note">This is a private restaurant workspace. New accounts do not get access until approved.</div><div class="install-entry"><button class="btn linklike" data-action="install">⇩ Add CFA Jolt to your iPad</button></div></div></section></div>';
+ app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA <span style="color:#ffda72">Spark</span></span></div><div><div class="eyebrow" style="color:#ffd777">A better way to run the day</div><h1>One team.<br>Every task.<br>Done right.</h1><p style="color:#ffe3eb;max-width:400px;font-size:16px">Checklists, food safety, and accountability — all together in your restaurant\'s own workspace.</p></div><div style="color:#f4cad4;font-size:12px">CFA East Cartmill · Independent operations system</div></section><section class="auth-right"><div class="auth-panel"><div class="mobile-only" style="margin-bottom:30px;font-size:22px;font-weight:800;color:#9e0a23">✓ CFA Spark</div><div class="eyebrow">Restaurant operations</div><h2>'+(signup?'Create an account':'Welcome back')+'</h2><p class="muted">'+(signup?'Sign up to join your restaurant workspace. An administrator will approve staff access.':'Sign in to your CFA Spark workspace.')+'</p><form data-form="auth">'+(signup?'<div class="field"><label>Full name</label><input name="name" required maxlength="120" placeholder="Your name"></div>':'')+'<div class="field"><label>Work email</label><input type="email" name="email" autocomplete="email" required placeholder="name@example.com"></div><div class="field"><label>Password</label><input type="password" name="password" autocomplete="'+(signup?'new-password':'current-password')+'" minlength="8" required placeholder="At least 8 characters"></div><button class="btn full" type="submit">'+(signup?'Create account':'Sign in')+'</button></form><div class="divider"></div><p class="muted" style="text-align:center">'+(signup?'Already registered?':'New team member?')+' <button class="btn linklike" data-action="authmode" data-id="'+(signup?'login':'signup')+'">'+(signup?'Sign in':'Create account')+'</button></p><div class="box-note">This is a private restaurant workspace. New accounts do not get access until approved.</div><div class="install-entry"><button class="btn linklike" data-action="install">⇩ Add CFA Spark to your iPad</button></div></div></section></div>';
 }
 function renderPending(){
- app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA Jolt</span></div><div><h1>Ready for the next shift.</h1><p style="color:#ffdbe4">Simple tools for a better restaurant day.</p></div><span>Secure staff access</span></section><section class="auth-right"><div class="auth-panel"><div class="eyebrow">Account created</div><h2>Welcome, '+esc(s.profile.full_name||"team member")+'</h2><p class="muted">Your account is waiting for approval from a Director. Please ask your restaurant Director to assign your access level.</p><div class="box-note">Director is the highest access level in CFA Jolt. New accounts remain restricted until approved.</div><div class="divider"></div><div class="row between"><button class="btn secondary" data-action="refresh">Check approval</button><button class="btn secondary" data-action="signout">Sign out</button></div></div></section></div>';
+ app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA Spark</span></div><div><h1>Ready for the next shift.</h1><p style="color:#ffdbe4">Simple tools for a better restaurant day.</p></div><span>Secure staff access</span></section><section class="auth-right"><div class="auth-panel"><div class="eyebrow">Account created</div><h2>Welcome, '+esc(s.profile.full_name||"team member")+'</h2><p class="muted">Your account is waiting for approval from a Director. Please ask your restaurant Director to assign your access level.</p><div class="box-note">Director is the highest access level in CFA Spark. New accounts remain restricted until approved.</div><div class="divider"></div><div class="row between"><button class="btn secondary" data-action="refresh">Check approval</button><button class="btn secondary" data-action="signout">Sign out</button></div></div></section></div>';
 }
 function screenHtml(){if(s.screen==="checklists")return checklistsHtml();if(s.screen==="temperatures")return temperaturesHtml();if(s.screen==="team")return teamHtml();if(s.screen==="settings")return settingsHtml();if(s.screen==="detail")return detailHtml();return dashboardHtml();}
-function heading(title,sub,button){return '<div class="section-head"><div><div class="eyebrow">CFA Jolt · Operations</div><h1>'+title+'</h1><p class="muted">'+sub+'</p></div>'+(button||"")+'</div>';}
+function heading(title,sub,button){return '<div class="section-head"><div><div class="eyebrow">CFA Spark · Operations</div><h1>'+title+'</h1><p class="muted">'+sub+'</p></div>'+(button||"")+'</div>';}
 function progressBar(p){return '<div class="progress-track"><div class="progress-fill" style="width:'+p+'%"></div></div>';}
 function empty(title,body,action){return '<div class="empty"><div class="empty-icon">☑</div><h2>'+title+'</h2><p class="muted">'+body+'</p>'+(action||'')+'</div>';}
 function cardHtml(c){const n=ct(c).length,done=completedCount(c),p=percentage(c);return '<div class="card check-card" data-action="detail" data-id="'+c.id+'"><div class="row between"><div class="check-meta"><span class="pill">'+esc(c.category)+'</span><span class="pill dim">'+esc(c.shift)+'</span></div>'+(p===100&&n?'<span class="pill success">✓ Done</span>':'<span class="pill gold">'+(scheduleName(c))+'</span>')+'</div><h3 style="font-size:17px;margin:0">'+esc(c.title)+'</h3><p class="muted small" style="margin:0;min-height:35px">'+esc(c.description||"Operational checklist")+'</p><div class="progress-info"><strong>'+done+' of '+n+' completed</strong><strong>'+p+'%</strong></div>'+progressBar(p)+'</div>';}
