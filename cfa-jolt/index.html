@@ -118,6 +118,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .auth-right{padding-top:max(26px,env(safe-area-inset-top))}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+/* CFA Spark — checklist completion celebration */
+.cow-celebrate-overlay{position:fixed;inset:0;z-index:9999;background:rgba(31,10,18,.66);display:grid;place-items:center;padding:20px;animation:cow-celebrate-fade .18s ease-out}
+.cow-celebrate-panel{width:min(450px,100%);max-height:min(92dvh,800px);overflow:auto;background:linear-gradient(180deg,#fff9fb,#ffffff 72%);border:1px solid #f3dae1;border-radius:24px;padding:26px 24px 24px;box-shadow:0 30px 85px #21051055;text-align:center;position:relative}
+.cow-celebrate-close{position:absolute;top:14px;right:14px;min-width:42px;min-height:42px;border:1px solid #f2d8df;border-radius:12px;background:#fff;color:#7b3850;font-size:20px;font-weight:650}
+.cow-celebrate-symbol{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:30px;background:#e8f4eb;color:#277650;font-size:12px;font-weight:800;letter-spacing:.2px}
+.cow-celebrate-art{height:255px;display:flex;align-items:flex-end;justify-content:center;position:relative;margin:0 auto 5px}
+.cow-celebrate-shadow{position:absolute;bottom:12px;left:50%;width:115px;height:17px;margin-left:-57.5px;border-radius:50%;background:rgba(48,33,40,.10);filter:blur(5px);animation:cow-shadow-hop .82s ease-in-out 3}
+.cow-celebrate-img{position:relative;z-index:1;display:block;width:175px;max-height:240px;object-fit:contain;transform-origin:center bottom;animation:cow-vertical-hop .82s ease-in-out 3;will-change:transform;filter:drop-shadow(0 3px 3px #17181f1c)}
+.cow-celebrate-panel h2{font-size:26px;letter-spacing:-.7px;margin:8px 0}
+.cow-celebrate-panel p{margin:0 auto 18px;max-width:370px;font-size:14px;line-height:1.55;color:#726a6e}
+.cow-celebrate-panel .btn{min-width:160px;min-height:46px}
+@keyframes cow-vertical-hop{0%,100%{transform:translateY(0)}13%{transform:translateY(0)}43%{transform:translateY(-60px)}69%{transform:translateY(-9px)}80%{transform:translateY(0)}}
+@keyframes cow-shadow-hop{0%,100%{transform:scaleX(1);opacity:.65}43%{transform:scaleX(.6);opacity:.25}80%{transform:scaleX(1);opacity:.65}}
+@keyframes cow-celebrate-fade{from{opacity:0}to{opacity:1}}
+@media(max-width:650px){.cow-celebrate-panel{padding:24px 18px 22px;border-radius:21px}.cow-celebrate-art{height:235px}.cow-celebrate-img{width:162px}.cow-celebrate-panel h2{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.cow-celebrate-overlay,.cow-celebrate-shadow,.cow-celebrate-img{animation:none!important}.cow-celebrate-img{will-change:auto}}
 </style></head><body><div id="app"></div><div id="toast-root"></div>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0?bundle";
@@ -361,10 +378,50 @@ document.addEventListener("submit",async ev=>{
  }catch(e){err(e);}finally{if(submit&&submit.isConnected)submit.disabled=false;}
 });
 async function initUser(){const {data,error}=await sb.auth.getUser();if(error&&error.message!=="Auth session missing!"){console.warn(error);}s.user=data?.user||null;await sync();}
+
+let cowCelebrationTimer=null;
+function showCowCelebration(checklist){
+ const old=document.getElementById("cow-celebrate-overlay");
+ if(old)old.remove();
+ if(cowCelebrationTimer){clearTimeout(cowCelebrationTimer);cowCelebrationTimer=null;}
+ const overlay=document.createElement("div");
+ overlay.id="cow-celebrate-overlay";
+ overlay.className="cow-celebrate-overlay";
+ overlay.setAttribute("role","dialog");
+ overlay.setAttribute("aria-modal","true");
+ overlay.setAttribute("aria-labelledby","cow-celebrate-title");
+ const title=esc(checklist.title);
+ overlay.innerHTML='<div class="cow-celebrate-panel">'+
+ '<button type="button" class="cow-celebrate-close" aria-label="Close celebration">✕</button>'+
+ '<div class="cow-celebrate-symbol">✓ Checklist completed</div>'+
+ '<div class="cow-celebrate-art">'+
+ '<span class="cow-celebrate-shadow" aria-hidden="true"></span>'+
+ '<img class="cow-celebrate-img" src="/cow-checklist.webp" width="175" height="215" alt="Happy cow jumping up and down" draggable="false">'+
+ '</div>'+
+ '<h2 id="cow-celebrate-title">Moo-velous work! 🎉</h2>'+
+ '<p>You finished <strong>'+title+'</strong>. Every task is checked off!</p>'+
+ '<button type="button" class="btn cow-celebrate-done">Keep it up!</button>'+
+ '</div>';
+ const dismiss=()=>{
+   if(cowCelebrationTimer){clearTimeout(cowCelebrationTimer);cowCelebrationTimer=null;}
+   overlay.remove();
+   document.removeEventListener("keydown",onKeyDown);
+ };
+ const onKeyDown=(event)=>{if(event.key==="Escape")dismiss()};
+ overlay.querySelector(".cow-celebrate-close").addEventListener("click",dismiss);
+ overlay.querySelector(".cow-celebrate-done").addEventListener("click",dismiss);
+ overlay.addEventListener("click",event=>{if(event.target===overlay)dismiss()});
+ document.addEventListener("keydown",onKeyDown);
+ document.body.appendChild(overlay);
+ overlay.querySelector(".cow-celebrate-done").focus({preventScroll:true});
+ cowCelebrationTimer=setTimeout(dismiss,4600);
+}
+
 async function toggleTask(id){
  const item=s.items.find(x=>x.id===id);if(!item)return;const c=s.checklists.find(x=>x.id===item.checklist_id);if(!c||!c.active)return;
  if(!dueToday(c)){toast("This checklist is due only on "+scheduleName(c)+".",true);return;}
  const done=completion(item);
+ const completesChecklist=!done&&ct(c).length>0&&completedCount(c)===ct(c).length-1;
  if(done){
   if(!manage()&&done.completed_by!==s.user.id){toast("Only the person who completed the task or a manager can undo it.",true);return;}
   const {error}=await sb.from("task_completions").delete().eq("id",done.id);if(error){err(error);return;}
@@ -372,6 +429,9 @@ async function toggleTask(id){
   const {error}=await sb.from("task_completions").insert({item_id:id,service_date:dateKey(c)});if(error){err(error);return;}
  }
  await sync();
+ if(completesChecklist&&completedCount(c)===ct(c).length){
+   showCowCelebration(c);
+ }
 }
 async function archiveChecklist(id){
  const c=s.checklists.find(x=>x.id===id);if(!c)return;
