@@ -92,15 +92,17 @@ function dashboardHtml(){
 function checklistsHtml(){
  const visible=s.checklists.filter(c=>(c.active||manage())&&(s.filter==="All"||c.category===s.filter)&&((manage()&&s.scheduleView==="all")||dueToday(c)));
  return heading("Digital checklists","Daily tasks and the "+weekdayNames[currentWeekday()]+" AM/PM cleaning checklists.",manage()?'<button class="btn" data-action="edit" data-id="new">+ Create checklist</button>':'')+
+ '<div class="filter"><button class="'+(s.scheduleView==="today"||!manage()?"active":"")+'" data-action="scheduleview" data-id="today">Today · '+weekdayNames[currentWeekday()]+'</button>'+
+ (manage()?'<button class="'+(s.scheduleView==="all"?"active":"")+'" data-action="scheduleview" data-id="all">All schedules · Manage</button>':'')+'</div>'+
  '<div class="filter">'+["All","FOH","BOH","Leadership"].map(f=>'<button class="'+(s.filter===f?"active":"")+'" data-action="filter" data-id="'+f+'">'+f+'</button>').join("")+'</div>'+
- (visible.length?'<div class="check-grid">'+visible.map(cardHtml).join("")+'</div>':empty("No checklists found","Switch filters or create your first checklist.",manage()?'<button class="btn" data-action="edit" data-id="new">Create checklist</button>':''));
+ (visible.length?'<div class="check-grid">'+visible.map(cardHtml).join("")+'</div>':empty("No checklists due","Switch categories or select All schedules to review other days.",manage()?'<button class="btn" data-action="edit" data-id="new">Create checklist</button>':''));
 }
 function detailHtml(){
  const c=s.checklists.find(x=>x.id===s.selected);if(!c){s.screen="checklists";return checklistsHtml();}
  const its=ct(c);const n=completedCount(c);
  return '<div class="row between wrap" style="margin-bottom:24px"><button class="btn secondary" data-action="nav" data-id="checklists">← All checklists</button>'+(manage()?'<div class="row wrap"><button class="btn secondary sm" data-action="move" data-id="'+c.id+'" data-dir="up">↑ Move up</button><button class="btn secondary sm" data-action="move" data-id="'+c.id+'" data-dir="down">↓ Move down</button><button class="btn secondary sm" data-action="edit" data-id="'+c.id+'">Edit</button><button class="btn warn sm" data-action="archive" data-id="'+c.id+'">'+(c.active?"Archive":"Restore")+'</button></div>':'')+'</div>'+
- '<div class="card" style="max-width:950px"><div class="check-meta" style="margin-bottom:15px"><span class="pill">'+esc(c.category)+'</span><span class="pill dim">'+esc(c.shift)+'</span><span class="pill gold">'+esc(c.frequency)+'</span>'+(c.active?'':'<span class="pill red">Archived</span>')+'</div><h1>'+esc(c.title)+'</h1><p class="muted">'+esc(c.description||"Check off each task as it is completed.")+'</p><div style="margin:24px 0"><div class="progress-info"><strong>'+n+' of '+its.length+' completed</strong><strong>'+percentage(c)+'%</strong></div>'+progressBar(percentage(c))+'</div><div class="divider"></div>'+
- (its.length?its.map(i=>{const r=completion(i);const canUndo=r&&(manage()||r.completed_by===s.user.id);return '<div class="item '+(r?"done":"")+'"><button class="tick '+(r?"done":"")+'" data-action="toggle" data-id="'+i.id+'" '+(r&&!canUndo?"disabled title=\"Completed by another team member\"":"")+'>'+(r?"✓":"")+'</button><div style="flex:1"><div class="item-name">'+esc(i.label)+'</div>'+(r?'<span class="muted tiny">Completed '+fmt(r.completed_at)+' · '+esc(s.people.find(x=>x.id===r.completed_by)?.full_name||"team member")+'</span>':'<span class="muted tiny">Not completed yet</span>')+'</div></div>';}).join(""):'<p class="muted">No tasks in this checklist. Edit to add items.</p>')+'</div>';
+ '<div class="card" style="max-width:950px"><div class="check-meta" style="margin-bottom:15px"><span class="pill">'+esc(c.category)+'</span><span class="pill dim">'+esc(c.shift)+'</span><span class="pill gold">'+esc(scheduleName(c))+'</span>'+(c.active?'':'<span class="pill red">Archived</span>')+'</div><h1>'+esc(c.title)+'</h1><p class="muted">'+esc(c.description||"Check off each task as it is completed.")+'</p><div style="margin:24px 0"><div class="progress-info"><strong>'+n+' of '+its.length+' completed</strong><strong>'+percentage(c)+'%</strong></div>'+progressBar(percentage(c))+'</div><div class="divider"></div>'+
+ (its.length?its.map(i=>{const r=completion(i);const canUndo=r&&(manage()||r.completed_by===s.user.id);return '<div class="item '+(r?"done":"")+'"><button class="tick '+(r?"done":"")+'" data-action="toggle" data-id="'+i.id+'" '+((r&&!canUndo)||!dueToday(c)||!c.active?"disabled title=\"Can only complete on scheduled day\"":"")+'>'+(r?"✓":"")+'</button><div style="flex:1"><div class="item-name">'+esc(i.label)+'</div>'+(r?'<span class="muted tiny">Completed '+fmt(r.completed_at)+' · '+esc(s.people.find(x=>x.id===r.completed_by)?.full_name||"team member")+'</span>':'<span class="muted tiny">Not completed yet</span>')+'</div></div>';}).join(""):'<p class="muted">No tasks in this checklist. Edit to add items.</p>')+'</div>';
 }
 function temperaturesHtml(){
  const rows=s.temps.slice(0,70).map(t=>{
@@ -275,4 +277,8 @@ async function saveTemperature(x){
 }
 sb.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT"){s.user=null;s.profile=null;render();}});
 loadingScreen();await initUser();
+let lastScheduleDate=today();
+async function refreshOnNewDay(){if(today()!==lastScheduleDate){lastScheduleDate=today();await sync();}}
+setInterval(refreshOnNewDay,60000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshOnNewDay();});
 </script></body></html>
