@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CFA Jolt · Restaurant Operations</title>
+<meta name="theme-color" content="#092b23">
+<style>
+:root{--ink:#11382e;--deep:#092b23;--muted:#697a74;--line:#e6ece8;--bg:#f7f9f7;--white:#fff;--gold:#ffda72;--mint:#ecf6f0;--red:#bf493c;--green:#277650}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:#1b2b25;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}a{color:inherit}input,select,textarea{width:100%;border:1px solid #dce5dd;border-radius:10px;background:#fff;padding:12px 13px;outline:none;color:#23382f}input:focus,select:focus,textarea:focus{border-color:#33785a;box-shadow:0 0 0 3px #32795a22}textarea{resize:vertical;min-height:95px}label{display:block;font-weight:650;font-size:12px;color:#345348;margin-bottom:6px}h1,h2,h3,p{margin-top:0}h1{font-size:30px;letter-spacing:-1.1px;margin-bottom:9px}h2{font-size:21px;letter-spacing:-.6px}h3{font-size:15px}p{line-height:1.55}.muted{color:var(--muted)}.small{font-size:12px}.tiny{font-size:11px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:#5a8470;font-weight:800}.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:11px 16px;border-radius:10px;background:var(--ink);color:white;border:1px solid var(--ink);font-weight:700;white-space:nowrap}.btn:hover{filter:brightness(1.12)}.btn.secondary{background:white;color:var(--ink);border:1px solid #dce5dd}.btn.warn{background:#fff2ec;color:#a4422e;border-color:#ffdfd2}.btn.full{width:100%}.btn.sm{font-size:12px;padding:8px 11px}.btn.linklike{border:none;background:transparent;color:var(--ink);padding:6px}.pill{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:750;background:#e8f4eb;color:#287452}.pill.gold{background:#fff2cf;color:#8c651c}.pill.dim{background:#eff2f0;color:#587068}.pill.red{background:#fff0ed;color:#b04437}.app{display:flex;min-height:100vh}.side{width:246px;background:var(--deep);color:#fff;flex-shrink:0;min-height:100vh;display:flex;flex-direction:column;padding:30px 16px;position:sticky;top:0;height:100vh}.logo{display:flex;align-items:center;gap:11px;font-weight:850;font-size:20px;letter-spacing:-.65px;padding:0 14px 32px}.logo-symbol{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--gold);color:var(--deep);font-size:22px}.side-section{color:#8db6a5;padding:14px 14px 7px;font-size:10px;text-transform:uppercase;letter-spacing:1.8px;font-weight:800}.nav{border:0;width:100%;background:transparent;color:#c4dbd0;text-align:left;border-radius:10px;padding:13px;display:flex;align-items:center;gap:13px;font-weight:650;margin:3px 0}.nav:hover{background:#21483b}.nav.active{background:#e9f8ef;color:#12452d}.nav .sym{font-size:17px;width:19px;text-align:center}.side-bottom{margin-top:auto;border-top:1px solid #ffffff20;padding:17px 10px 0;line-height:1.5}.main{flex:1;min-width:0}.top{height:82px;border-bottom:1px solid var(--line);background:white;display:flex;align-items:center;justify-content:space-between;padding:16px 40px}.content{padding:35px 40px;max-width:1480px;margin:auto}.row{display:flex;gap:12px;align-items:center}.between{justify-content:space-between}.wrap{flex-wrap:wrap}.section-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:24px}.section-head p{margin-bottom:0}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 1px 2px #06201607}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:25px}.stat-label{color:#677d72;font-weight:650;font-size:12px}.stat-num{font-size:32px;letter-spacing:-1.1px;font-weight:850;margin:12px 0 5px}.stat-icon{height:36px;width:36px;display:grid;place-items:center;background:#eef6ef;border-radius:10px;font-size:18px}.two-cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:20px}.card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.progress-track{height:9px;border-radius:10px;background:#e8eee9;overflow:hidden}.progress-fill{height:100%;background:#2d9c69;border-radius:10px;transition:width .3s}.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.check-card{padding:23px;display:flex;flex-direction:column;gap:12px;cursor:pointer}.check-card:hover{border-color:#b9d4c4;box-shadow:0 8px 28px #12432d0d}.check-meta{display:flex;gap:7px;flex-wrap:wrap}.filter{display:flex;gap:7px;flex-wrap:wrap;margin:20px 0}.filter button{border:1px solid #dfe8e0;background:white;border-radius:9px;padding:9px 13px;color:#426252;font-weight:650}.filter button.active{background:#164733;color:white;border-color:#164733}.item{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid #edf0ed}.item:last-child{border-bottom:none}.tick{width:24px;height:24px;border:2px solid #c7d7ca;background:white;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0}.tick.done{background:#2b9464;border-color:#2b9464}.item.done .item-name{text-decoration:line-through;color:#85958c}.empty{padding:65px 20px;text-align:center;border:1px dashed #bcd1c3;border-radius:16px;background:#fff}.empty-icon{font-size:40px;margin-bottom:12px}.table-wrap{overflow-x:auto}.table{width:100%;border-collapse:collapse}.table th{text-align:left;color:#70857a;font-size:11px;text-transform:uppercase;letter-spacing:.8px;padding:14px 10px;border-bottom:1px solid var(--line)}.table td{padding:14px 10px;border-bottom:1px solid #edf0ed;vertical-align:middle}.table tr:last-child td{border:0}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{margin-bottom:14px}.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.modal-back{position:fixed;inset:0;background:#0522189c;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}.modal{background:white;width:min(620px,100%);max-height:calc(100vh - 40px);overflow-y:auto;padding:28px;border-radius:18px;box-shadow:0 30px 80px #071c1559}.auth-bg{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;background:#fff}.auth-left{background:var(--deep);padding:8vw 6vw;display:flex;flex-direction:column;justify-content:space-between;color:#fff;position:relative;overflow:hidden}.auth-left:after{content:"";position:absolute;border:100px solid #ffffff0a;border-radius:50%;width:400px;height:400px;bottom:-250px;right:-250px}.auth-left h1{font-size:clamp(36px,4vw,64px);letter-spacing:-2px;line-height:1.08;max-width:540px;margin-top:90px}.auth-right{display:grid;place-items:center;padding:35px}.auth-panel{width:min(420px,100%)}.auth-panel h2{font-size:28px;margin-bottom:7px}.divider{height:1px;background:var(--line);margin:20px 0}.toast{position:fixed;bottom:24px;right:24px;z-index:25;background:#173f30;color:white;padding:15px 20px;border-radius:12px;box-shadow:0 8px 35px #101f1560;max-width:380px;line-height:1.5}.box-note{background:#f3f8f4;padding:14px 16px;border-radius:11px;color:#436a53;font-size:12px;line-height:1.6}.alert{background:#fff3eb;color:#a65327;padding:12px 16px;border-radius:10px;font-size:12px}.mobile-only{display:none}.progress-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:12px}.list-row{padding:14px 0;border-bottom:1px solid var(--line)}.list-row:last-child{border:0}.kpi-dot{font-size:18px}.chart-line{padding:15px 0}.chart-line:not(:last-child){border-bottom:1px solid var(--line)}@media(max-width:950px){.side{width:76px;padding:22px 8px}.side .nav-label,.side .side-section,.side .side-bottom,.side .logo-label{display:none}.logo{justify-content:center;padding:0 0 28px}.nav{justify-content:center;padding:14px 3px}.content{padding:25px}.top{padding:16px 24px}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two-cols{grid-template-columns:1fr}}@media(max-width:650px){.app{display:block;padding-bottom:64px}.side{height:65px;min-height:65px;width:100%;position:fixed;bottom:0;top:auto;left:0;z-index:6;flex-direction:row;padding:4px 6px;justify-content:space-around}.side .logo{display:none}.side nav{display:flex;width:100%;justify-content:space-around}.side .nav{padding:8px;margin:0;flex:1}.side .nav .sym{font-size:21px}.side-bottom{display:none}.content{padding:24px 16px}.top{height:70px;padding:10px 17px}.top .muted{display:none}.top .btn{padding:8px}.stat-grid{gap:10px}.stat-num{font-size:26px}.card{padding:17px}.check-grid{grid-template-columns:1fr}.auth-bg{grid-template-columns:1fr}.auth-left{display:none}.auth-right{min-height:100vh}.section-head{align-items:flex-start}.section-head h1{font-size:26px}.form-grid{grid-template-columns:1fr}.modal{padding:20px}.mobile-only{display:block}}
+</style></head><body><div id="app"></div><div id="toast-root"></div>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0?bundle";
+const SUPABASE_URL="https://bmkrfeasbwtezczbhqhi.supabase.co";
+const SUPABASE_KEY="sb_publishable_n9cFcgIDR9jn6vR84J5-ug_4fTQzPvD";
+const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
+const s={user:null,profile:null,checklists:[],items:[],completions:[],temps:[],people:[],screen:"dashboard",filter:"All",selected:null,editor:null,authMode:"login",tempModal:false,busy:false};
+const app=document.getElementById("app");
+const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const roleLabel=r=>({"operator":"Operator","director":"Director","manager":"Manager","team_leader":"Team Leader","team_member":"Team Member","pending":"Pending Approval"}[r]||"Team Member");
+const manage=()=>["operator","director","manager"].includes(s.profile?.role);
+const staff=()=>s.profile&&s.profile.role!=="pending";
+const fmt=d=>new Date(d).toLocaleString("en-US",{timeZone:"America/Los_Angeles",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+function dateInLA(d){const p=new Intl.DateTimeFormat("en-US",{timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);let o={};p.forEach(x=>o[x.type]=x.value);return o.year+"-"+o.month+"-"+o.day;}
+function weekStart(date){const d=new Date(date+"T12:00:00Z");const day=d.getUTCDay();d.setUTCDate(d.getUTCDate()-((day+6)%7));return d.toISOString().slice(0,10);}
+const today=()=>dateInLA(new Date());
+const dateKey=c=>c.frequency==="weekly"?weekStart(today()):today();
+const ct=c=>s.items.filter(i=>i.checklist_id===c.id);
+const completion=i=>{const c=s.checklists.find(x=>x.id===i.checklist_id);return c?s.completions.find(x=>x.item_id===i.id&&x.service_date===dateKey(c)):null;};
+const completedCount=c=>ct(c).filter(i=>completion(i)).length;
+const percentage=c=>ct(c).length?Math.round(completedCount(c)/ct(c).length*100):0;
+function toast(message,bad=false){const el=document.getElementById("toast-root");el.innerHTML='<div class="toast" style="'+(bad?'background:#a93e36':'')+'">'+esc(message)+'</div>';setTimeout(()=>el.innerHTML="",4200);}
+function errorMessage(e){return e&&e.message?e.message:String(e||"Something went wrong");}
+function err(e){console.error(e);toast(errorMessage(e),true);}
+function loadingScreen(){app.innerHTML='<div class="auth-right" style="height:100vh"><div><div class="logo-symbol" style="margin:auto">✓</div><p class="muted">Loading CFA Jolt...</p></div></div>';}
+async function sync(){
+ if(!s.user){s.profile=null;render();return;}
+ try{
+  const p=await sb.from("profiles").select("*").eq("id",s.user.id).single();
+  if(p.error)throw p.error;
+  s.profile=p.data;
+  if(staff()){
+   const res=await Promise.all([
+    sb.from("checklists").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true}),
+    sb.from("checklist_items").select("*").order("position",{ascending:true}),
+    sb.from("task_completions").select("*").gte("service_date",weekStart(today())),
+    sb.from("temperature_logs").select("*").order("recorded_at",{ascending:false}).limit(150),
+    manage()?sb.from("profiles").select("*").order("joined_at",{ascending:false}):Promise.resolve({data:[],error:null})
+   ]);
+   for(const x of res)if(x.error)throw x.error;
+   [s.checklists,s.items,s.completions,s.temps,s.people]=res.map(x=>x.data||[]);
+  }
+  render();
+ }catch(e){err(e);render();}
+}
+function render(){
+ if(!s.user){renderAuth();return;}
+ if(!s.profile){app.innerHTML='<div class="auth-right" style="height:100vh"><p class="muted">Setting up your profile...</p></div>';return;}
+ if(!staff()){renderPending();return;}
+ const navs=[["dashboard","◫","Dashboard"],["checklists","☑","Checklists"],["temperatures","♨","Temperature Logs"],["team","♙","Team Members"]];
+ const menu=navs.filter(n=>n[0]!=="team"||manage()).map(n=>'<button class="nav '+(s.screen===n[0]?'active':'')+'" data-action="nav" data-id="'+n[0]+'"><span class="sym">'+n[1]+'</span><span class="nav-label">'+n[2]+'</span></button>').join("");
+ const name=s.profile.full_name||s.user.email.split("@")[0];
+ app.innerHTML='<div class="app"><aside class="side"><div class="logo"><div class="logo-symbol">✓</div><span class="logo-label">CFA <span style="color:#ffda72">Jolt</span></span></div><div class="side-section">Workspace</div><nav>'+menu+'</nav><div class="side-bottom"><div style="font-weight:800">'+esc(name)+'</div><div style="color:#a0c2b4;font-size:12px">'+esc(roleLabel(s.profile.role))+'</div></div></aside><main class="main"><div class="top"><div><div style="font-weight:800;color:#173b2b">CFA East Cartmill</div><div class="muted small">Restaurant operations workspace</div></div><div class="row"><span class="pill dim">'+esc(roleLabel(s.profile.role))+'</span><button class="btn secondary sm" data-action="signout">Sign out</button></div></div><div class="content">'+screenHtml()+'</div></main></div>'+modalHtml();
+}
+function renderAuth(){
+ const signup=s.authMode==="signup";
+ app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA <span style="color:#ffda72">Jolt</span></span></div><div><div class="eyebrow" style="color:#ffd777">A better way to run the day</div><h1>One team.<br>Every task.<br>Done right.</h1><p style="color:#b5d2c5;max-width:400px;font-size:16px">Checklists, food safety, and accountability — all together in your restaurant\'s own workspace.</p></div><div style="color:#9fbcac;font-size:12px">CFA East Cartmill · Independent operations system</div></section><section class="auth-right"><div class="auth-panel"><div class="mobile-only" style="margin-bottom:30px;font-size:22px;font-weight:800;color:#174b35">✓ CFA Jolt</div><div class="eyebrow">Restaurant operations</div><h2>'+(signup?'Create an account':'Welcome back')+'</h2><p class="muted">'+(signup?'Sign up to join your restaurant workspace. An administrator will approve staff access.':'Sign in to your CFA Jolt workspace.')+'</p><form data-form="auth">'+(signup?'<div class="field"><label>Full name</label><input name="name" required maxlength="120" placeholder="Your name"></div>':'')+'<div class="field"><label>Work email</label><input type="email" name="email" autocomplete="email" required placeholder="name@example.com"></div><div class="field"><label>Password</label><input type="password" name="password" autocomplete="'+(signup?'new-password':'current-password')+'" minlength="8" required placeholder="At least 8 characters"></div><button class="btn full" type="submit">'+(signup?'Create account':'Sign in')+'</button></form><div class="divider"></div><p class="muted" style="text-align:center">'+(signup?'Already registered?':'New team member?')+' <button class="btn linklike" data-action="authmode" data-id="'+(signup?'login':'signup')+'">'+(signup?'Sign in':'Create account')+'</button></p><div class="box-note">This is a private restaurant workspace. New accounts do not get access until approved.</div></div></section></div>';
+}
+function renderPending(){
+ app.innerHTML='<div class="auth-bg"><section class="auth-left"><div class="logo"><div class="logo-symbol">✓</div><span>CFA Jolt</span></div><div><h1>Ready for the next shift.</h1><p style="color:#b5d2c5">Simple tools for a better restaurant day.</p></div><span>Secure staff access</span></section><section class="auth-right"><div class="auth-panel"><div class="eyebrow">Account created</div><h2>Welcome, '+esc(s.profile.full_name||"team member")+'</h2><p class="muted">Your account is waiting for approval from the Operator or a Director. If you are setting up CFA Jolt for the first time, use the one-time Operator setup code below.</p><form data-form="claim"><div class="field"><label>One-time Operator setup code</label><input name="code" autocomplete="off" placeholder="Enter setup code" required></div><button class="btn full" type="submit">Activate Operator account</button></form><div class="divider"></div><div class="row between"><button class="btn secondary" data-action="refresh">Check approval</button><button class="btn secondary" data-action="signout">Sign out</button></div><p class="muted small" style="margin-top:18px">Staff members can leave the setup code blank and wait for approval.</p></div></section></div>';
+}
+function screenHtml(){if(s.screen==="checklists")return checklistsHtml();if(s.screen==="temperatures")return temperaturesHtml();if(s.screen==="team")return teamHtml();if(s.screen==="detail")return detailHtml();return dashboardHtml();}
+function heading(title,sub,button){return '<div class="section-head"><div><div class="eyebrow">CFA Jolt · Operations</div><h1>'+title+'</h1><p class="muted">'+sub+'</p></div>'+(button||"")+'</div>';}
+function progressBar(p){return '<div class="progress-track"><div class="progress-fill" style="width:'+p+'%"></div></div>';}
+function empty(title,body,action){return '<div class="empty"><div class="empty-icon">☑</div><h2>'+title+'</h2><p class="muted">'+body+'</p>'+(action||'')+'</div>';}
+function cardHtml(c){const n=ct(c).length,done=completedCount(c),p=percentage(c);return '<div class="card check-card" data-action="detail" data-id="'+c.id+'"><div class="row between"><div class="check-meta"><span class="pill">'+esc(c.category)+'</span><span class="pill dim">'+esc(c.shift)+'</span></div>'+(p===100&&n?'<span class="pill">✓ Done</span>':'<span class="pill gold">'+(c.frequency==="weekly"?"Weekly":"Daily")+'</span>')+'</div><h3 style="font-size:17px;margin:0">'+esc(c.title)+'</h3><p class="muted small" style="margin:0;min-height:35px">'+esc(c.description||"Operational checklist")+'</p><div class="progress-info"><strong>'+done+' of '+n+' completed</strong><strong>'+p+'%</strong></div>'+progressBar(p)+'</div>';}
+function dashboardHtml(){
+ const active=s.checklists.filter(x=>x.active),allItems=active.flatMap(ct),done=allItems.filter(i=>completion(i)).length,rate=allItems.length?Math.round(done/allItems.length*100):0;
+ const outstanding=allItems.length-done;
+ const stats=[["Task completion",rate+"%","◉","Across active checklists"],["Tasks completed",String(done),"✓","This reporting period"],["Open tasks",String(outstanding),"☷","Remaining checklist items"],["Temperature entries",String(s.temps.filter(t=>dateInLA(new Date(t.recorded_at))===today()).length),"♨","Recorded today"]];
+ const recent=s.temps.slice(0,5).map(t=>'<div class="list-row"><div class="row between"><div><strong>'+esc(t.item_name)+'</strong><div class="muted small">'+esc(t.area)+' · '+fmt(t.recorded_at)+'</div></div><span class="pill dim">'+esc(t.temperature_f)+'°F</span></div></div>').join("");
+ return heading("Good "+(new Date().getHours()<12?"morning":new Date().getHours()<17?"afternoon":"evening")+".","Here is your restaurant operations overview for "+new Date().toLocaleDateString("en-US",{timeZone:"America/Los_Angeles",weekday:"long",month:"long",day:"numeric"})+".",manage()?'<button class="btn" data-action="edit" data-id="new">+ New checklist</button>':'')+
+ '<div class="stat-grid">'+stats.map(a=>'<div class="card"><div class="row between"><span class="stat-label">'+a[0]+'</span><div class="stat-icon">'+a[2]+'</div></div><div class="stat-num">'+a[1]+'</div><span class="muted small">'+a[3]+'</span></div>').join("")+'</div>'+
+ '<div class="two-cols"><section class="card"><div class="card-title"><h2 style="margin:0">Checklist progress</h2><button class="btn linklike sm" data-action="nav" data-id="checklists">View all →</button></div>'+(active.length?active.slice(0,8).map(c=>'<div class="chart-line"><div class="progress-info"><strong>'+esc(c.title)+'</strong><span class="muted">'+completedCount(c)+' / '+ct(c).length+'</span></div>'+progressBar(percentage(c))+'</div>').join(""):empty("No checklists yet","Create your first opening, closing, or daily checklist.",manage()?'<button class="btn" data-action="edit" data-id="new">Create a checklist</button>':''))+'</section><section class="card"><div class="card-title"><h2 style="margin:0">Latest food safety logs</h2><button class="btn linklike sm" data-action="nav" data-id="temperatures">View all →</button></div>'+(recent||'<p class="muted">No temperature readings recorded yet.</p>')+'<div class="box-note" style="margin-top:20px">Temperature target limits should always follow your restaurant\'s approved food safety procedures.</div></section></div>';
+}
+function checklistsHtml(){
+ const visible=s.checklists.filter(c=>(c.active||manage())&&(s.filter==="All"||c.category===s.filter));
+ return heading("Digital checklists","Opening, midday, closing and recurring operational procedures.",manage()?'<button class="btn" data-action="edit" data-id="new">+ Create checklist</button>':'')+
+ '<div class="filter">'+["All","FOH","BOH","Leadership"].map(f=>'<button class="'+(s.filter===f?"active":"")+'" data-action="filter" data-id="'+f+'">'+f+'</button>').join("")+'</div>'+
+ (visible.length?'<div class="check-grid">'+visible.map(cardHtml).join("")+'</div>':empty("No checklists found","Switch filters or create your first checklist.",manage()?'<button class="btn" data-action="edit" data-id="new">Create checklist</button>':''));
+}
+function detailHtml(){
+ const c=s.checklists.find(x=>x.id===s.selected);if(!c){s.screen="checklists";return checklistsHtml();}
+ const its=ct(c);const n=completedCount(c);
+ return '<div class="row between wrap" style="margin-bottom:24px"><button class="btn secondary" data-action="nav" data-id="checklists">← All checklists</button>'+(manage()?'<div class="row wrap"><button class="btn secondary sm" data-action="move" data-id="'+c.id+'" data-dir="up">↑ Move up</button><button class="btn secondary sm" data-action="move" data-id="'+c.id+'" data-dir="down">↓ Move down</button><button class="btn secondary sm" data-action="edit" data-id="'+c.id+'">Edit</button><button class="btn warn sm" data-action="archive" data-id="'+c.id+'">'+(c.active?"Archive":"Restore")+'</button></div>':'')+'</div>'+
+ '<div class="card" style="max-width:950px"><div class="check-meta" style="margin-bottom:15px"><span class="pill">'+esc(c.category)+'</span><span class="pill dim">'+esc(c.shift)+'</span><span class="pill gold">'+esc(c.frequency)+'</span>'+(c.active?'':'<span class="pill red">Archived</span>')+'</div><h1>'+esc(c.title)+'</h1><p class="muted">'+esc(c.description||"Check off each task as it is completed.")+'</p><div style="margin:24px 0"><div class="progress-info"><strong>'+n+' of '+its.length+' completed</strong><strong>'+percentage(c)+'%</strong></div>'+progressBar(percentage(c))+'</div><div class="divider"></div>'+
+ (its.length?its.map(i=>{const r=completion(i);const canUndo=r&&(manage()||r.completed_by===s.user.id);return '<div class="item '+(r?"done":"")+'"><button class="tick '+(r?"done":"")+'" data-action="toggle" data-id="'+i.id+'" '+(r&&!canUndo?"disabled title=\"Completed by another team member\"":"")+'>'+(r?"✓":"")+'</button><div style="flex:1"><div class="item-name">'+esc(i.label)+'</div>'+(r?'<span class="muted tiny">Completed '+fmt(r.completed_at)+' · '+esc(s.people.find(x=>x.id===r.completed_by)?.full_name||"team member")+'</span>':'<span class="muted tiny">Not completed yet</span>')+'</div></div>';}).join(""):'<p class="muted">No tasks in this checklist. Edit to add items.</p>')+'</div>';
+}
+function temperaturesHtml(){
+ const rows=s.temps.slice(0,70).map(t=>{
+ const outside=(t.min_f!==null&&Number(t.temperature_f)<Number(t.min_f))||(t.max_f!==null&&Number(t.temperature_f)>Number(t.max_f));
+ return '<tr><td><strong>'+esc(t.item_name)+'</strong><div class="muted small">'+esc(t.area)+'</div></td><td>'+esc(t.temperature_f)+'°F</td><td class="muted">'+(t.min_f===null?"—":esc(t.min_f))+' to '+(t.max_f===null?"—":esc(t.max_f))+'°F</td><td><span class="pill '+(outside?"red":"")+'">'+(outside?"Outside range":"Recorded")+'</span></td><td class="muted">'+fmt(t.recorded_at)+'</td><td class="muted">'+esc(t.corrective_action||"—")+'</td></tr>';}).join("");
+ return heading("Temperature logs","Record food safety readings and corrective actions.",'<button class="btn" data-action="tempnew">+ Record temperature</button>')+
+ '<div class="box-note" style="margin-bottom:20px">Use only your location\'s approved food safety limits. Out-of-range readings require a documented corrective action. This tool is not a substitute for approved safety procedures.</div>'+
+ '<div class="card table-wrap">'+(rows?'<table class="table"><thead><tr><th>Item / Area</th><th>Reading</th><th>Target range</th><th>Status</th><th>Recorded</th><th>Corrective action</th></tr></thead><tbody>'+rows+'</tbody></table>':empty("No readings yet","Start by recording a temperature and its approved safe range."))+'</div>';
+}
+function teamHtml(){
+ if(!manage())return dashboardHtml();
+ const roles=["pending","team_member","team_leader","manager","director","operator"];
+ const rows=s.people.map(p=>{
+ const allowed=s.profile.role==="operator"||(s.profile.role==="director"&&!["operator","director"].includes(p.role));
+ let opt=roles.filter(r=>s.profile.role==="operator"||!["operator","director"].includes(r)).map(r=>'<option value="'+r+'" '+(p.role===r?'selected':'')+'>'+esc(roleLabel(r))+'</option>').join("");
+ return '<tr><td><strong>'+esc(p.full_name||"Unnamed team member")+'</strong><div class="muted small">'+esc(p.id===s.user.id?"You":"Team account")+'</div></td><td><span class="pill '+(p.role==="pending"?"gold":"dim")+'">'+esc(roleLabel(p.role))+'</span></td><td class="muted">'+new Date(p.joined_at).toLocaleDateString()+'</td><td>'+(allowed&&["operator","director"].includes(s.profile.role)?'<select style="max-width:190px" data-change="role" data-id="'+p.id+'">'+opt+'</select>':'<span class="muted">View only</span>')+'</td></tr>';
+ }).join("");
+ return heading("Team members","Approve new accounts and control who can access the workspace.",'')+
+ '<div class="box-note" style="margin-bottom:20px">Ask team members to select Create account on the login screen. New accounts begin with Pending Approval and cannot access restaurant records until you approve them.</div>'+
+ '<div class="card table-wrap">'+(rows?'<table class="table"><thead><tr><th>Team member</th><th>Access</th><th>Joined</th><th>Change role</th></tr></thead><tbody>'+rows+'</tbody></table>':empty("No team accounts","Ask teammates to create accounts first."))+'</div>';
+}
+function modalHtml(){
+ if(s.editor!==null){
+ const c=s.editor==="new"?null:s.checklists.find(x=>x.id===s.editor);
+ const list=c?ct(c).map(x=>x.label).join("\n"):"";
+ const sel=(arr,value)=>arr.map(x=>'<option value="'+x+'" '+(value===x?"selected":"")+'>'+x+'</option>').join("");
+ return '<div class="modal-back" data-action="backdrop"><div class="modal"><div class="row between"><h2>'+(c?"Edit checklist":"New checklist")+'</h2><button class="btn secondary sm" data-action="close">✕</button></div><form data-form="checklist"><div class="field"><label>Checklist title</label><input name="title" required maxlength="150" minlength="2" value="'+esc(c?.title||"")+'" placeholder="e.g. FOH Opening Checklist"></div><div class="field"><label>Description (optional)</label><input name="description" value="'+esc(c?.description||"")+'" placeholder="What this checklist covers"></div><div class="form-grid"><div class="field"><label>Department</label><select name="category">'+sel(["FOH","BOH","Leadership"],c?.category||"FOH")+'</select></div><div class="field"><label>Repeat</label><select name="frequency">'+sel(["daily","weekly"],c?.frequency||"daily")+'</select></div><div class="field"><label>Shift</label><select name="shift">'+sel(["Anytime","Opening","Midday","Closing"],c?.shift||"Anytime")+'</select></div></div><div class="field"><label>Tasks (one per line)</label><textarea name="tasks" rows="8" required placeholder="Check station supplies&#10;Verify equipment is ready&#10;Complete walkthrough">'+esc(list)+'</textarea><p class="muted small">Each line becomes an individual task. Editing existing lines preserves completion records where possible; removing tasks deletes their history.</p></div><div class="form-actions"><button type="button" class="btn secondary" data-action="close">Cancel</button><button class="btn" type="submit">'+(c?"Save changes":"Create checklist")+'</button></div></form></div></div>';
+ }
+ if(s.tempModal){
+ return '<div class="modal-back" data-action="backdrop"><div class="modal"><div class="row between"><h2>Record temperature</h2><button class="btn secondary sm" data-action="close">✕</button></div><form data-form="temperature"><div class="form-grid"><div class="field"><label>Area / Station</label><input required name="area" placeholder="e.g. Prep Station"></div><div class="field"><label>Food / Equipment</label><input required name="item_name" placeholder="Item being measured"></div><div class="field"><label>Reading (°F)</label><input required type="number" step="0.1" min="-100" max="400" name="temperature_f" placeholder="Measured temperature"></div><div class="field"><label>Approved minimum (°F, optional)</label><input type="number" step="0.1" name="min_f" placeholder="Your approved minimum"></div><div class="field"><label>Approved maximum (°F, optional)</label><input type="number" step="0.1" name="max_f" placeholder="Your approved maximum"></div></div><div class="field"><label>Corrective action / Notes</label><textarea name="corrective_action" rows="3" placeholder="Required if reading is outside your approved range"></textarea></div><div class="form-actions"><button type="button" class="btn secondary" data-action="close">Cancel</button><button class="btn" type="submit">Save reading</button></div></form></div></div>';
+ }
+ return "";
+}
+document.addEventListener("click",async ev=>{
+ const b=ev.target.closest("[data-action]");if(!b)return;
+ const a=b.dataset.action,id=b.dataset.id;
+ if(a==="backdrop"&&ev.target!==b)return;
+ if(a==="nav"){s.screen=id;s.selected=null;render();window.scrollTo(0,0);}
+ if(a==="authmode"){s.authMode=id;render();}
+ if(a==="signout"){const {error}=await sb.auth.signOut();if(error)err(error);else{s.user=null;s.profile=null;render();}}
+ if(a==="refresh"){await sync();}
+ if(a==="filter"){s.filter=id;render();}
+ if(a==="detail"){s.screen="detail";s.selected=id;render();window.scrollTo(0,0);}
+ if(a==="edit"){s.editor=id;render();}
+ if(a==="tempnew"){s.tempModal=true;render();}
+ if(a==="close"||a==="backdrop"){s.editor=null;s.tempModal=false;render();}
+ if(a==="toggle"){await toggleTask(id);}
+ if(a==="archive"){await archiveChecklist(id);}
+ if(a==="move"){await moveChecklist(id,b.dataset.dir);}
+});
+document.addEventListener("change",async ev=>{
+ const t=ev.target;if(t.dataset.change!=="role")return;
+ if(!confirm("Set this team member to "+roleLabel(t.value)+"?")){render();return;}
+ const {error}=await sb.rpc("set_team_member_role",{p_target:t.dataset.id,p_role:t.value});
+ if(error)err(error);else{toast("Role updated.");await sync();}
+});
+document.addEventListener("submit",async ev=>{
+ const f=ev.target;if(!f.dataset.form)return;ev.preventDefault();
+ const kind=f.dataset.form,submit=f.querySelector('[type="submit"]');if(submit)submit.disabled=true;
+ try{
+  const x=Object.fromEntries(new FormData(f));
+  if(kind==="auth"){
+   if(s.authMode==="signup"){
+    const {data,error}=await sb.auth.signUp({email:x.email.trim(),password:x.password,options:{data:{full_name:x.name.trim()},emailRedirectTo:window.location.href}});
+    if(error)throw error;
+    toast(data.session?"Account created.":"Account submitted. Check your email to confirm, then sign in.");
+    if(data.session){await initUser();}else{s.authMode="login";render();}
+   }else{
+    const {error}=await sb.auth.signInWithPassword({email:x.email.trim(),password:x.password});
+    if(error)throw error;await initUser();
+   }
+  }
+  if(kind==="claim"){
+   const {error}=await sb.rpc("claim_operator",{p_setup_code:x.code.trim()});
+   if(error)throw error;toast("Operator account activated!");s.screen="dashboard";await sync();
+  }
+  if(kind==="checklist"){await saveChecklist(x);}
+  if(kind==="temperature"){await saveTemperature(x);}
+ }catch(e){err(e);}finally{if(submit&&submit.isConnected)submit.disabled=false;}
+});
+async function initUser(){const {data,error}=await sb.auth.getUser();if(error&&error.message!=="Auth session missing!"){console.warn(error);}s.user=data?.user||null;await sync();}
+async function toggleTask(id){
+ const item=s.items.find(x=>x.id===id);if(!item)return;const c=s.checklists.find(x=>x.id===item.checklist_id);if(!c||!c.active)return;
+ const done=completion(item);
+ if(done){
+  if(!manage()&&done.completed_by!==s.user.id){toast("Only the person who completed the task or a manager can undo it.",true);return;}
+  const {error}=await sb.from("task_completions").delete().eq("id",done.id);if(error){err(error);return;}
+ }else{
+  const {error}=await sb.from("task_completions").insert({item_id:id,service_date:dateKey(c)});if(error){err(error);return;}
+ }
+ await sync();
+}
+async function archiveChecklist(id){
+ const c=s.checklists.find(x=>x.id===id);if(!c)return;
+ if(!confirm((c.active?"Archive":"Restore")+" "+c.title+"?"))return;
+ const {error}=await sb.from("checklists").update({active:!c.active}).eq("id",id);
+ if(error)err(error);else{toast(c.active?"Checklist archived.":"Checklist restored.");await sync();}
+}
+async function moveChecklist(id,dir){
+ const c=s.checklists.find(x=>x.id===id);if(!c)return;
+ const group=s.checklists.filter(x=>x.category===c.category).sort((a,b)=>a.sort_order-b.sort_order||a.created_at.localeCompare(b.created_at));
+ const at=group.findIndex(x=>x.id===id),to=at+(dir==="up"?-1:1);if(to<0||to>=group.length){toast("Already at the end of this group.");return;}
+ const reorder=[...group];[reorder[at],reorder[to]]=[reorder[to],reorder[at]];
+ for(let i=0;i<reorder.length;i++){const r=await sb.from("checklists").update({sort_order:i+1}).eq("id",reorder[i].id);if(r.error){err(r.error);return;}}
+ toast("Checklist order updated.");await sync();
+}
+async function saveChecklist(x){
+ const title=x.title.trim(),lines=x.tasks.split(/\r?\n/).map(y=>y.trim()).filter(Boolean);
+ if(lines.length===0)throw new Error("Add at least one task.");
+ if(lines.some(y=>y.length<2||y.length>300))throw new Error("Each task must be between 2 and 300 characters.");
+ if(lines.length>150)throw new Error("A checklist can have up to 150 tasks.");
+ let c=s.editor==="new"?null:s.checklists.find(y=>y.id===s.editor);
+ const payload={title,description:x.description.trim(),category:x.category,frequency:x.frequency,shift:x.shift};
+ let id;
+ if(c){
+  const r=await sb.from("checklists").update(payload).eq("id",c.id).select("id").single();if(r.error)throw r.error;id=c.id;
+ }else{
+  const r=await sb.from("checklists").insert({...payload,sort_order:s.checklists.length+1}).select("id").single();if(r.error)throw r.error;id=r.data.id;
+ }
+ const prev=c?ct(c):[];
+ for(let i=0;i<lines.length;i++){
+  if(prev[i]){
+   if(prev[i].label!==lines[i]||prev[i].position!==i){const r=await sb.from("checklist_items").update({label:lines[i],position:i}).eq("id",prev[i].id);if(r.error)throw r.error;}
+  }else{
+   const r=await sb.from("checklist_items").insert({checklist_id:id,label:lines[i],position:i});if(r.error)throw r.error;
+  }
+ }
+ for(const old of prev.slice(lines.length)){const r=await sb.from("checklist_items").delete().eq("id",old.id);if(r.error)throw r.error;}
+ s.editor=null;s.screen="detail";s.selected=id;toast(c?"Checklist saved.":"Checklist created.");await sync();
+}
+async function saveTemperature(x){
+ const t=Number(x.temperature_f),min=x.min_f===""?null:Number(x.min_f),max=x.max_f===""?null:Number(x.max_f),notes=x.corrective_action.trim();
+ if(min!==null&&max!==null&&min>max)throw new Error("Minimum must be below maximum.");
+ if(((min!==null&&t<min)||(max!==null&&t>max))&&!notes)throw new Error("Document a corrective action for an out-of-range reading.");
+ const r=await sb.from("temperature_logs").insert({area:x.area.trim(),item_name:x.item_name.trim(),temperature_f:t,min_f:min,max_f:max,corrective_action:notes});
+ if(r.error)throw r.error;
+ s.tempModal=false;toast("Temperature recorded.");await sync();
+}
+sb.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT"){s.user=null;s.profile=null;render();}});
+loadingScreen();await initUser();
+</script></body></html>
