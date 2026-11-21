@@ -166,6 +166,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .stat-grid>.card::before{width:67px;height:42px}
 }
 @media(prefers-reduced-motion:reduce){.stat-grid>.card::before{transition:none}}
+
+/* Dashboard checklist names and progress bars are direct tap targets. */
+.chart-line{padding:3px 0}
+.dashboard-checklist-action{display:block;width:100%;min-height:74px;padding:13px 10px;background:transparent;border:0;border-radius:12px;color:inherit;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.dashboard-checklist-action:hover{background:#f9f0f4}
+.dashboard-checklist-action:active{background:#f2e5eb}
+.dashboard-checklist-action:focus-visible{outline:3px solid #4c5965;outline-offset:-3px}
+.dashboard-checklist-action .progress-info{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dashboard-checklist-action .progress-info strong{flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.4}
+.dashboard-checklist-action .progress-info .muted{flex:none;white-space:nowrap}
+.dashboard-checklist-action .progress-track{display:block}
+.dashboard-checklist-action .progress-fill{display:block}
+.dashboard-row-chevron{font-size:23px;line-height:12px;vertical-align:middle;margin-left:7px;color:#9e0a23;font-weight:800}
+@media(max-width:650px){.dashboard-checklist-action{min-height:76px;padding:14px 7px}.dashboard-checklist-action .progress-info{gap:8px}}
 </style></head><body><div id="app"></div><div id="toast-root"></div>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0?bundle";
@@ -280,7 +294,7 @@ function dashboardHtml(){
  const recent=s.temps.slice(0,5).map(t=>'<div class="list-row"><div class="row between"><div><strong>'+esc(t.item_name)+'</strong><div class="muted small">'+esc(t.area)+' · '+fmt(t.recorded_at)+'</div></div><span class="pill dim">'+esc(t.temperature_f)+'°F</span></div></div>').join("");
  return heading("Good "+(new Date().getHours()<12?"morning":new Date().getHours()<17?"afternoon":"evening")+".","Here is your restaurant operations overview for "+new Date().toLocaleDateString("en-US",{timeZone:"America/Los_Angeles",weekday:"long",month:"long",day:"numeric"})+".",manage()?'<button class="btn" data-action="edit" data-id="new">+ New checklist</button>':'')+
  '<div class="stat-grid">'+stats.map(a=>'<div class="card"><div class="row between"><span class="stat-label">'+a[0]+'</span><div class="stat-icon">'+a[2]+'</div></div><div class="stat-num">'+a[1]+'</div><span class="muted small">'+a[3]+'</span></div>').join("")+'</div>'+
- '<div class="two-cols"><section class="card"><div class="card-title"><h2 style="margin:0">Today’s checklist progress</h2><button class="btn linklike sm" data-action="nav" data-id="checklists">View all →</button></div>'+(active.length?active.slice(0,8).map(c=>'<div class="chart-line"><div class="progress-info"><strong>'+esc(c.title)+'</strong><span class="muted">'+completedCount(c)+' / '+ct(c).length+'</span></div>'+progressBar(percentage(c))+'</div>').join(""):empty("No checklists yet","Create your first opening, closing, or daily checklist.",manage()?'<button class="btn" data-action="edit" data-id="new">Create a checklist</button>':''))+'</section><section class="card"><div class="card-title"><h2 style="margin:0">Latest food safety logs</h2><button class="btn linklike sm" data-action="nav" data-id="temperatures">View all →</button></div>'+(recent||'<p class="muted">No temperature readings recorded yet.</p>')+'<div class="box-note" style="margin-top:20px">Temperature target limits should always follow your restaurant\'s approved food safety procedures.</div></section></div>';
+ '<div class="two-cols"><section class="card"><div class="card-title"><h2 style="margin:0">Today’s checklist progress</h2><button class="btn linklike sm" data-action="nav" data-id="checklists">View all →</button></div>'+(active.length?active.slice(0,8).map(c=>'<div class="chart-line"><button type="button" class="dashboard-checklist-action" data-action="detail" data-id="'+c.id+'" aria-label="Open checklist: '+esc(c.title)+'"><span class="progress-info"><strong>'+esc(c.title)+'</strong><span class="muted">'+completedCount(c)+' / '+ct(c).length+'<span class="dashboard-row-chevron" aria-hidden="true">›</span></span></span><span class="progress-track"><span class="progress-fill" style="width:'+percentage(c)+'%"></span></span></button></div>').join(""):empty("No checklists yet","Create your first opening, closing, or daily checklist.",manage()?'<button class="btn" data-action="edit" data-id="new">Create a checklist</button>':''))+'</section><section class="card"><div class="card-title"><h2 style="margin:0">Latest food safety logs</h2><button class="btn linklike sm" data-action="nav" data-id="temperatures">View all →</button></div>'+(recent||'<p class="muted">No temperature readings recorded yet.</p>')+'<div class="box-note" style="margin-top:20px">Temperature target limits should always follow your restaurant\'s approved food safety procedures.</div></section></div>';
 }
 function checklistsHtml(){
  const visible=s.checklists.filter(c=>(c.active||manage())&&(s.filter==="All"||c.category===s.filter)&&((manage()&&s.scheduleView==="all")||dueToday(c)));
